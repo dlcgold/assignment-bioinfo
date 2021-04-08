@@ -1,0 +1,13 @@
+digraph sample{
+	"aat" -> "att" [ label = "t" ];
+	"att" -> "tta" [ label = "a" ];
+	"tta" -> "taa" [ label = "a" ];
+	"taa" -> "aaa" [ label = "a" ];
+	"aaa" -> "aag" [ label = "g" ];
+	"aag" -> "agt" [ label = "t" ];
+	"agt" -> "gtt" [ label = "t" ];
+	"gtt" -> "ttt" [ label = "t" ];
+	"ttt" -> "tta" [ label = "a" ];
+	"taa" -> "aac" [ label = "c" ];
+	"aac" -> "acc" [ label = "c" ];
+}
