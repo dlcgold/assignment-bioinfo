@@ -51,7 +51,7 @@ fn check_virus(s1: &String, s2: &String) -> bool {
         return false;
     }
     for (x, y) in vecseq1.iter().zip(vecseq2.iter()) {
-        //println!("compare {} vs {}", x, y);
+        println!("compare {} vs {}", x, y);
         if x.chars().next().unwrap() != y.chars().next().unwrap() || !check {
             return false;
         }
@@ -61,24 +61,24 @@ fn check_virus(s1: &String, s2: &String) -> bool {
             'g' | 'c' => check = check_gc(x, y),
             _ => continue,
         }
-        //println!("{}", check);
+        println!("{}", check);
     }
     check
 }
 
 #[allow(dead_code)]
 fn check_a(s1: &String, s2: &String) -> bool {
-    s2.len() <= 5 * s1.len()
+    s2.len() >= s1.len() * 2 && s2.len() - s1.len() <= 5 * s1.len()
 }
 
 #[allow(dead_code)]
 fn check_t(s1: &String, s2: &String) -> bool {
-    s2.len() <= 10 * s1.len()
+    s2.len() >= s1.len() * 2 && s2.len() - s1.len() <= 10 * s1.len()
 }
 
 #[allow(dead_code)]
 fn check_gc(s1: &String, s2: &String) -> bool {
-    s2.len() >= s1.len()
+    s2.len() >= s1.len() * 2
 }
 
 #[derive(Debug)]
@@ -397,17 +397,36 @@ impl Dbg {
     }
 }
 
+#[allow(dead_code)]
+fn get_kmers_unique_index(s: &mut String, k: i32) -> (Vec<String>, Vec<i32>) {
+    let mut v: Vec<String> = Vec::new();
+    let mut ind = Vec::new();
+    let mut i = 0;
+    while s.len() >= k as usize {
+        if !v.contains(&s[0..k as usize].to_string()) {
+            v.push(s[0..k as usize].to_string());
+        } else {
+            ind.push(i);
+        }
+        *s = String::from(&s[1..]);
+        i += 1;
+    }
+    /*let mut set: HashSet<String> = v.into_iter().collect();
+    v = set.into_iter().collect();*/
+    (v, ind)
+}
+
 fn check_mutations(s1: &String, s2: &String) -> Vec<Mutation> {
     let mut mutations = Vec::new();
     let seq1 = s1.to_lowercase();
     let seq2 = s2.to_lowercase();
-    let dbg = Dbg::new(vec![seq1.clone(), seq2.clone()], 5);
+    /*let dbg = Dbg::new(vec![seq1.clone(), seq2.clone()], 5);
     println!("{},{}", &seq1, &seq2);
     //println!("{:?}", dbg.edges);
     //dbg.count_bubble();
     dbg.to_dot("outputs/mut.dot".to_string());
 
-    let mut kmers = get_kmers_unique_map(&mut vec![seq1.clone(), seq2.clone()], 5);
+    let mut kmers = get_kmers_unique_map(&mut vec![seq1.clone(), seq2.clone()], 5);*/
     /*let mut kmers1 = get_kmers_unique(&mut vec![seq1.clone()], 5);
     let mut kmers2 = get_kmers_unique(&mut vec![seq2.clone()], 5);*/
     /*kmers1.sort();
@@ -506,13 +525,55 @@ fn check_mutations(s1: &String, s2: &String) -> Vec<Mutation> {
             }
         }
     }*/
-    let dbg1 = Dbg::new(vec![seq1.clone()], 4);
+    /*let dbg1 = Dbg::new(vec![seq1.clone()], 4);
     let dbg2 = Dbg::new(vec![seq2.clone()], 4);
     dbg1.to_dot("outputs/mut1.dot".to_string());
     dbg2.to_dot("outputs/mut2.dot".to_string());
-    println!("{}\n{}", dbg1.get_superstring(), dbg2.get_superstring());
+    println!("{},{}", dbg1.get_superstring(), dbg2.get_superstring());*/
+    let mut kmers1 = get_kmers_unique_index(&mut seq1.clone(), 5);
+    let mut kmers2 = get_kmers_unique_index(&mut seq2.clone(), 5);
+    println!("kmers1: {:?}, {:?}\nkmers2: {:?}, {:?}", &kmers1.0, &kmers1.1, &kmers2.0, &kmers2.1);
+    if kmers1.0.len() > kmers2.0.len() {
+        for i in &kmers2.1 {
+            kmers1.0[*i as usize] = "".to_string();
+        }
+        kmers1.0.retain(|i| i != "");
+    } else if kmers1.0.len() < kmers2.0.len()
+    {
+        for i in &kmers1.1 {
+            kmers2.0[*i as usize] = "".to_string();
+        }
+        kmers2.0.retain(|i| i != "");
+    }
+    println!("kmers1: {:?}, {:?}\nkmers2: {:?}, {:?}", &kmers1.0, &kmers1.1, &kmers2.0, &kmers2.1);
+    /*let mut nkmers1: Vec<String> = Vec::new();
+    let mut nkmers2 = Vec::new();*/
+    let mut index = 0;
+    kmers1.0.retain(|e| {
+        index += 1;
+        ((index - 1) % 4 == 0)
+    });
+    index = 0;
+    kmers2.0.retain(|e| {
+        index += 1;
+        (index - 1) % 4 == 0
+    });
+    println!("{:?}\n{:?}", kmers1.0, kmers2.0);
+    let mut l = cmp::min(kmers1.0.len(), kmers2.0.len());
+    let mut index_mut = 0;
+    /*for i in 0..l {
+        if i == 0{
+
+        }
+    }*/
     mutations
 }
+
+/*fn cmps (s1: &String, s2: &String) -> (char, usize){
+    let mut cr = '';
+    let mut ir = 0;
+
+}*/
 
 fn check_manhattan(s1: &String, s2: &String, h: i32, v: i32, d: i32) -> i32 {
     let seq1 = s1.to_lowercase();
@@ -744,11 +805,11 @@ fn check_virus2(s1: &String, s2: &String) -> bool {
 
             //println!("{}, {} for {}", count1, count2, seq1[i]);
 
-            if seq1[i] == 'a' && count2 <= 5 * count1 {
+            if seq1[i] == 'a' && count2 >= 2 * count1 && count2 - count1 <= 5 * count1 {
                 check = true;
-            } else if seq1[i] == 't' && count2 <= 10 * count1 {
+            } else if seq1[i] == 't' && count2 >= 2 * count1 && count2 - count1 <= 10 * count1 {
                 check = true
-            } else if (seq1[i] == 'c' || seq1[i] == 'g') && count2 >= count1 {
+            } else if (seq1[i] == 'c' || seq1[i] == 'g') && count2 >= 2 * count1 {
                 check = true
             } else {
                 return false;
@@ -757,7 +818,7 @@ fn check_virus2(s1: &String, s2: &String) -> bool {
             count1 = 0;
         }
         //println!("{},{}|{},{}", i, seq1.len(), j, seq2.len());
-        if i == seq1.len() - 1 && j != seq2.len() {
+        if !check || (i == seq1.len() - 1 && j != seq2.len()) {
             return false;
         }
     }
@@ -773,7 +834,7 @@ mod tests {
     fn test_es1_1() {
         let seq1 = "ATAGCTC".to_string();
         let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
-        assert!(check_virus(&seq1, &seq2));
+        assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
@@ -807,7 +868,7 @@ mod tests {
     #[test]
     fn test_es1_6() {
         let seq1 = "ATAAGCTC".to_string();
-        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq2 = "AAATTAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
         assert!(check_virus(&seq1, &seq2));
     }
 
@@ -829,7 +890,7 @@ mod tests {
     fn test_es1_9() {
         let seq1 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
         let seq2 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
-        assert!(check_virus(&seq1, &seq2));
+        assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
@@ -918,12 +979,11 @@ mod tests {
     }
 
 
-
     #[test]
     fn test_es11_1() {
         let seq1 = "ATAGCTC".to_string();
         let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
-        assert!(check_virus2(&seq1, &seq2));
+        assert!(!check_virus2(&seq1, &seq2));
     }
 
     #[test]
@@ -957,7 +1017,7 @@ mod tests {
     #[test]
     fn test_es11_6() {
         let seq1 = "ATAAGCTC".to_string();
-        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq2 = "AAATTAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
         assert!(check_virus2(&seq1, &seq2));
     }
 
@@ -979,6 +1039,6 @@ mod tests {
     fn test_es11_9() {
         let seq1 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
         let seq2 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
-        assert!(check_virus2(&seq1, &seq2));
+        assert!(!check_virus2(&seq1, &seq2));
     }
 }
