@@ -4,8 +4,15 @@ digraph sample{
 	"ttaa" -> "taaa" [ label = "a" ];
 	"taaa" -> "aaag" [ label = "g" ];
 	"aaag" -> "aagt" [ label = "t" ];
-	"attt" -> "ttta" [ label = "a" ];
+	"aagt" -> "agtt" [ label = "t" ];
+	"agtt" -> "gttt" [ label = "t" ];
+	"gttt" -> "ttta" [ label = "a" ];
 	"ttta" -> "ttaa" [ label = "a" ];
+	"ttaa" -> "taac" [ label = "c" ];
+	"taac" -> "aacc" [ label = "c" ];
+	"attt" -> "ttta" [ label = "a" ];
 	"taaa" -> "aaaa" [ label = "a" ];
 	"aaaa" -> "aaat" [ label = "t" ];
+	"aaat" -> "aatt" [ label = "t" ];
+	"aatt" -> "attt" [ label = "t" ];
 }

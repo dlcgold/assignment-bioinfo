@@ -102,7 +102,7 @@ L'algoritmo si divide in due parti:
 %$l$, è in $\mathcal{O}(l)$. \\
 Si procede specificando che:
 \begin{itemize}
-  \item $len(X)$ restituisce la lunghezza di $X$, che sia una stringa o un
+  \item $length(X)$ restituisce la lunghezza di $X$, che sia una stringa o un
   vettore 
   \item $push(X,Y)$ effettua l'operazione di \texttt{push} di $Y$ nel
   vettore/stringa $X$
@@ -127,7 +127,7 @@ Si ha quindi lo pseudocodice:
   \begin{algorithmic}
     \Function{Splitter}{$s$}
     \State $result \gets \left[\,\,\,\right]$
-    \State $n\gets len(s)$
+    \State $n\gets length(s)$
     \State $last\_mismatch \gets 0$
     \If {$n==1$}
     \State $push(result, string(s[0]))$
@@ -164,7 +164,7 @@ Prima di vedere il confronto si specifica che:
 Fatte queste assunzioni si può fare ancora un ultima osservazione prima di
 procedere con l'algoritmo. Qualora i due vettori prodotti dalla funzione
 \texttt{Splitter} fossero di lunghezza diversa allora l'algoritmo non potrà in
-nessun caso dire che ci sia stata un'infezione in quanto si assume che non
+nessun caso dire che ci sia stata un'''infezione'' in quanto si assume che non
 ci siano né \textit{gaps} né \textit{inserimenti}. In altri termini qualora i
 due vettori siano di diversa cardinalità sicuramente, con queste premesse, non è
 avvenuta alcuna infezione. Vediamo ora le altre casistiche. Si itera
@@ -175,24 +175,18 @@ contemporaneamente sull'elemento i-esimo dei due vettori e:
   \item se i due elementi i-esimi presentano il primo carattere uguale allora si
   procede confrontando i due elementi i-esimi (si assuma $X$ vettore relativo
   alla ``sequenza originale'' e $Y$ vettore relativo alla sequenze che si vuole
-  dimostrare l'eventuale infezione). Innanzitutto la lunghezza di $Y[i]$ deve
-  essere maggiore di 2 volte quella di $X[i]$, in modo da verificare che per
-  ogni base ci sia stata l'aggiunta di almeno una base. Inoltre
+  dimostrare l'eventuale infezione):
   \begin{itemize}
-    \item se il primo carattere è ``a'' allora la lunghezza di \\
-    $Y[i]-X[i]$ deve
+    \item se il primo carattere è ``a'' allora la lunghezza di $Y[i]$ deve
     essere minore o uguale a 5 volte quella di $X[i]$, in quanto per ogni ``a''
-    in $X[i]$ posso avere al più 5 ``a'' in $Y[i]$ in aggiunta ad ogni ``a'' di
-    $X[i]$ 
-    \item se il primo carattere è ``t'' allora la lunghezza di \\
-    $Y[i]-X[i]$ deve 
+    in $X[i]$ posso avere al più 5 ``a'' in $Y[i]$
+    \item se il primo carattere è ``t'' allora la lunghezza di $Y[i]$ deve
     essere minore o uguale a 10 volte quella di $X[i]$, in quanto per ogni ``t''
-    in $X[i]$ posso avere al più 10 ``t'' in $Y[i]$ in aggiunta ad ogni ``T'' di
-    $X[i]$ 
-    \item se il primo carattere è ``c'' o ``g'' allora non ho bisogno di alcun
-    controllo ulteriore, non avendo un ``limite superiore'', al numero di basi
-    uguali che si possono aggiungere. Mi basta quindi controllare che per ogni
-    base ne sia stata aggiunta almeno una 
+    in $X[i]$ posso avere al più 10 ``t'' in $Y[i]$
+    \item se il primo carattere è ``c'' o ``g'' allora la lunghezza di $Y[i]$
+    deve essere maggiore o uguale di quella di $X[i]$, in quanto per ogni ``c''
+    o ``g'' in  in $X[i]$ posso avere un numero indefinito di ``c'' o ``g'' in
+    $Y[i]$ 
   \end{itemize}
 \end{itemize}
 \newpage
@@ -202,32 +196,26 @@ $seq1$:
 \begin{algorithm}[H]
   \begin{algorithmic}
     \Function{CheckInfection}{$seq1,seq2$}
-    \If{$len(seq1) == 0$ \textbf{or} $len(seq2)==0$}
+    \If{$length(seq1) == 0$ \textbf{or} $length(seq2)==0$}
     \State \textbf{return} $\bot$
     \EndIf
-    \State $vseq1\gets Splitter(lowercase(seq1))$
-    \State $vseq2\gets Splitter(lowercase(seq2))$
+    \State $vecseq1\gets Splitter(lowercase(seq1))$
+    \State $vecseq2\gets Splitter(lowercase(seq2))$
     \State $check \gets \top$
-    \State $check1 \gets \top$
-    \State $check2 \gets \top$
-    \If {$len(vseq1)\neq len(vseq2)$}
+    \If {$length(vecseq1)\neq length(vecseq2)$}
     \State \textbf{return} $\bot$
     \EndIf
-    \State $j \gets len(vseq1)$
+    \State $j \gets length(vecseq1)$
     \For {$i\gets 0$ \textbf{to} $j$}
-    \If {$vseq1[i][0] \neq vseq2[i][0]$ \textbf{or} $\neg check$}
+    \If {$vecseq1[i][0] \neq vecseq2[i][0]$}
     \State \textbf{return} $\bot$
     \EndIf
-    \If {$vseq1[i][0]==\,'a'$}
-    \State $check1 \gets len(vseq2[i]) \geq 2\cdot len(vseq1[i]) $
-    \State $check2 \gets (len(vseq2[i])-len(vseq1[i]) \leq 5\cdot len(vseq1[i]))$
-    \State $check \gets check1$ \textbf{and} $check2$
-    \ElsIf {$vseq1[i][0]==\,'t'$}
-    \State $check1 \gets len(vseq2[i]) \geq 2\cdot len(vseq1[i]) $
-    \State $check2 \gets (len(vseq2[i])-len(vseq1[i]) \leq 10\cdot len(vseq1[i]))$
-    \State $check \gets check1$ \textbf{and} $check2$
+    \If {$vecseq1[i][0]==\,'a'$}
+    \State $check \gets (length(vecseq2[i]) \leq 5\cdot length(vecseq1[i]))$
+    \ElsIf {$vecseq1[i][0]==\,'t'$}
+    \State $check \gets (length(vecseq2[i]) \leq 10\cdot length(vecseq1[i]))$
     \Else
-    \State $check \gets len(vseq2[i]) \geq 2\cdot len(vseq1[i]) $
+    \State $check \gets (length(vecseq2[i]) \geq length(vecseq1[i]))$
     \EndIf
     \EndFor
     \State \textbf{return} $check$
@@ -236,61 +224,42 @@ $seq1$:
   \caption{algoritmo di verifica dell'infezione}
 \end{algorithm}
 \begin{esempio}
-  Vediamo un esempio di infezione:
-  \begin{itemize}
-    \item \textbf{input}: "ATAGCTC" e \\"AAATTAAAGGGGCCCCCTTTTTTTCC" 
-    \item \textbf{output}: $\top$
-  \end{itemize}
-  infatti (si usano i colori per rappresentare i vari ``token'' dei vettori):
-  \begin{center}
-    \color{blue}A\color{green}T\color{blue}A\color{red}G\color{yellow}C\color{green}T\color{yellow}C\\ 
-    \color{blue}AAA\color{green}TT\color{blue}AAA\color{red}GGGG\color{yellow}CCCCC\color{green}TTTTTTT\color{yellow}CC
-  \end{center}
-  Avendo che tutti i vincoli sono rispettati.
-\end{esempio}
-\begin{esempio}
-  Vediamo un esempio opposto:
+  Qualche esempio:
   \begin{itemize}
     \item \textbf{input}: "ATAGCTC" e \\"AAATAAAGGGGCCCCCTTTTTTTCC" 
-    \item \textbf{output}: $\bot$
+    \item \textbf{output}: $\top$
   \end{itemize}
   infatti (si usano i colori per rappresentare i vari ``token'' dei vettori):
   \begin{center}
     \color{blue}A\color{green}T\color{blue}A\color{red}G\color{yellow}C\color{green}T\color{yellow}C\\ 
     \color{blue}AAA\color{green}T\color{blue}AAA\color{red}GGGG\color{yellow}CCCCC\color{green}TTTTTTT\color{yellow}CC
   \end{center}
-  Avendo che i due secondi ``token'' sono entrambi {\color{green}T}, non avendo
-  avuto quindi alcun inserimento di timina e non avendo quindi un'infezione, per
-  le specifiche date.
-\end{esempio}
-\begin{esempio}
-  Vediamo un altro esempio in cui non si può dire di avere una
+  Avendo che tutti i vincoli sono rispettati.
+  \newpage
+  D'altro canto vediamo un esempio in cui non si può dire di avere una
   mutazione: 
   \begin{itemize}
-    \item \textbf{input}: "ATAGCTC" e \\"AAATTAAAAAAAGGGGCCCCCTTTTTTTCC" 
+    \item \textbf{input}: "ATAGCTC" e \\"AAATAAAAAAGGGGCCCCCTTTTTTTCC" 
     \item \textbf{output}: $\bot$
   \end{itemize}
   infatti (si usano i colori per rappresentare i vari ``token'' dei vettori):
   \begin{center}
     \color{blue}A\color{green}T\color{blue}A\color{red}G\color{yellow}C\color{green}T\color{yellow}C\\ 
-    \color{blue}AAA\color{green}TT\color{blue}AAAAAAA\color{red}GGGG\color{yellow}CCCCC\color{green}TTTTTTT\color{yellow}CC
+    \color{blue}AAA\color{green}T\color{blue}AAAAAA\color{red}GGGG\color{yellow}CCCCC\color{green}TTTTTTT\color{yellow}CC
   \end{center}
   Avendo che il terzo ``token'' della prima stringa è {\color{blue}A} mentre
-  quello della seconda stringa è {\color{blue}AAAAAAA}, avendo che viene rotto il
-  vincolo per il quale per ogni $A$ posso avere al più 5 $A$ aggiunte con
-  l'infezione. 
-\end{esempio}
-\begin{esempio}
+  quello della seconda stringa è {\color{blue}AAAAAA}, avendo che viene rotto il
+  vincolo per il quale per ogni $A$ posso avere al più 5 $A$ nella mutazione.\\
   Un altro esempio in cui non si può dire di avere una
   mutazione è: 
   \begin{itemize}
-    \item \textbf{input}: "ATAGCTC" e \\"AAACCTTAAAAAAGGGGCCCCCTTTTTTT" 
+    \item \textbf{input}: "ATAGCTC" e \\"AAACCTAAAAAAGGGGCCCCCTTTTTTT" 
     \item \textbf{output}: $\bot$
   \end{itemize}
    infatti (si usano i colori per rappresentare i vari ``token'' dei vettori):
   \begin{center}
     \color{blue}A\color{green}T\color{blue}A\color{red}G\color{yellow}C\color{green}T\color{yellow}C\\ 
-    \color{blue}AAA\color{yellow}CC\color{green}TT\color{blue}AAAAAA\color{red}GGGG\color{yellow}CCCCC\color{green}TTTTTTT
+    \color{blue}AAA\color{yellow}CC\color{green}T\color{blue}AAAAAA\color{red}GGGG\color{yellow}CCCCC\color{green}TTTTTTT
   \end{center}
   In quanto i due secondi ``token'', {\color{green}T} e {\color{yellow}CC},
   corrispondono a caratteri diversi.
@@ -326,19 +295,18 @@ sequenza presenti, all'indice a cui si è arrivati con l'algoritmo, un carattere
 diverso da quello della prima si può restituire $\bot$. Controllando la
 seconda sequenza si aggiorna il rispettivo contatore e l'indice. Una volta che
 anche sulla seconda sequenza si ha un cambio di carattere o si è arrivati alla
-fine si confrontano i due contatori secondo le specifiche, confrontandoli in
-modo analogo a quanto fatto con le lunghezze dei ``token'' nella
-\textit{versione 1}. Finito questo controllo si 
+fine si confrontano i due contatori secondo le specifiche (ad esempio se nella
+stringa originale avevo due ``a'' consecutive ne posso avere al più 10 in quella
+che si vuole verificare essere la mutazione). Finito questo controllo si
 azzerano i contatori e si verifica che, qualora la sequenza originale sia stata
 visitata interamente, anche la seconda sia conclusa. In caso contrario si
 restituisce $\bot$.\\
 Si ha quindi il seguente pseudocodice.
 \begin{algorithm}[H]
-  \small
   \begin{algorithmic}
     \Function{CheckInfection}{$seq1,seq2$}
-    \State $m \gets len(seq1)$
-    \State $n \gets len(seq2)$
+    \State $m \gets length(seq1)$
+    \State $n \gets length(seq2)$
     \If{$m == 0$ \textbf{or} $n==0$}
     \State \textbf{return} $\bot$
     \EndIf
@@ -349,7 +317,7 @@ Si ha quindi il seguente pseudocodice.
     \State $j \gets 0$
     \For {$i\gets 0$ \textbf{to} $m$}
     \State $co \gets co+1$
-    \If {$i==n-1$ \textbf{or} $seq1[i]\neq seq[i+1]$}
+    \If {$i==n-1$ \textbf{or} $seq1[i]\neq seq[i+1$}
     \If {$seq1[i]\neq seq2[j]$}
     \State \textbf{return} $\bot$
     \EndIf
@@ -359,19 +327,19 @@ Si ha quindi il seguente pseudocodice.
     \EndWhile
     \State $cm \gets cm+1$
     \State $j \gets j+1$
-    \If {$seq1[i]==\,'a'$ \textbf{and} $cm\geq 2\cdot co$ \textbf{and} $cm-co \leq 5\cdot co$}
+    \If {$seq1[i]==\,'a'$ \textbf{and} $cm \leq 5\cdot co$}
     \State $check \gets \top$
-    \ElsIf {$seq1[i]==\,'t'$ \textbf{and} $cm\geq 2\cdot co$ \textbf{and} $cm-co \leq 10\cdot co$}
+    \ElsIf {$seq1[i]==\,'t'$ \textbf{and} $cm \leq 10\cdot co$}
     \State $check \gets \top$
     \ElsIf {($seq1[i]==\,'c'$ \textbf{or} $seq1[i]==\,'g'$) \textbf{and}
-    $cm \geq 2\cdot co$} 
+    $cm \geq co$} 
     \State $check \gets \top$
     \Else
     \State  \textbf{return} $\bot$
     \EndIf
     \State $co \gets 0$
     \State $cm \gets 0$
-    \If {$\neg check$ \textbf{or} ($i==m-1$ \textbf{and} $j\neq n$)}
+    \If {$i==m-1$ \textbf{and} $j\neq n$}
     \State  \textbf{return} $\bot$
     \EndIf
     \EndIf
@@ -384,10 +352,12 @@ Si ha quindi il seguente pseudocodice.
 Dal punto di vista pratico questo secondo algoritmo evita la fase di
 preprocessing vista nel primo algoritmo con la funzione
 \texttt{Splitter}. Anziché avere a priori le sottostringhe di cui confrontare le
-lunghezze, la seconda versione tiene conto di volta in volta dei caratteri
-uguali consecutivi, confrontando i contatori (motivo per cui anche gli esempi
-possono essere riadattati anche a questa seconda versione, sostituendo le
-lunghezze dei token coi due contatori). 
+lunghezze tiene conto di volta in volta dei caratteri uguali consecutivi,
+confrontando i contatori (motivo per cui anche gli esempi possono essere
+riadattati anche a questa seconda versione). Dal
+punto di vista computazionale, assumendo che la funzione \texttt{length} abbia
+costo lineare si ha in entrambi i casi un tempo quadratico nel caso peggiore,
+anche se si potrebbe fare uno studio più approfondito. 
 \chapter{Esercizio 2}
 \chapter{Esercizio 3}
 La \textbf{distanza di Hamming} tra due stringhe, che si assumono di uguale
@@ -437,23 +407,19 @@ la sottostringa, comune ad entrambe, più lunga.\\
 Dal punto di vista della griglia si assegnano i seguenti pesi:
 \begin{itemize}
   \item $w(diagonale)=1$
-  \item $w(verticale)=-i$
-  \item $w(orizzontale)=-j$
+  \item $w(verticale)=-1\cdot i$
+  \item $w(orizzontale)=-1\cdot j$
 \end{itemize}
-Dove gli archi diagonali rappresentano un match ed $i$ e $j$ sono gli indici che
-scorrono le due stringhe, ovvero rispettivamente sulle righe e sulle colonne.\\
+Dove gli archi diagonali rappresentano un match.\\
 \textbf{Qualora si ottenga un valore negativo viene messo 0}.\\
 Si ragiona quindi tenendo traccia del valore massimo raggiungo, tenendo traccia,
-per una maggior efficienza, anche delle coordinate. Una volta completata la
+per una maggior efficienza, anche delle coordinate. Una volta completata la
 griglia si avrà che il valore massimo corrisponde al nodo \textit{sink} del
 cammino composto dalla più lunga sequenza possibile di archi diagonali
 consecutivi. Qualsiasi altra ``operazione'', con archi orizzontali o diagonali,
 comporta infatti una perdita di punteggio e ogni volta che un cammino diagonale
 termina viene azzerato il punteggio, tramite pesi negativi pesati sugli
-indici. Azzerando ogni volta si permette di avere la costruzione di un eventuale
-cammino diagonale che assegna man mano il valore corrispondente alla lunghezza
-del cammino stesso, avendo che la diagonale pesa 1. Il valore massimo quindi
-altro non è che  
+indici. Il valore massimo quindi altro non è che 
 la lunghezza della \textit{longest common substring}. Sapendo che archi
 diagonali corrispondono a match tra le due sequenze si ottiene che tale cammino
 corrisponde alla \textit{longest common substring}. \\
@@ -465,7 +431,7 @@ Per ricostruire la \textit{longest common substring} si parte dal nodo
 carattere corrispondente e si risale tutto il cammino diagonale, aggiungendo di
 volta in volta in testa il carattere letto. Ci si ferma quindi quando non si ha
 più un nodo il cui punteggio è stato ottenuto tramite un arco diagonale.
-
+\newpage
 Vediamo quindi un esempio pratico. Siano date:
 \begin{itemize}
   \item AAACGCGCTTTTTCCCAT
