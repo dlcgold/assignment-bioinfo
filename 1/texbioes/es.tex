@@ -207,7 +207,7 @@ $seq1$:
     \EndIf
     \State $j \gets length(vecseq1)$
     \For {$i\gets 0$ \textbf{to} $j$}
-    \If {$vecseq1[i][0] \neq vecseq2[i][0]$}
+    \If {$vseq1[i][0] \neq vseq2[i][0]$ \textbf{or} $\neg check$}
     \State \textbf{return} $\bot$
     \EndIf
     \If {$vecseq1[i][0]==\,'a'$}
@@ -407,19 +407,23 @@ la sottostringa, comune ad entrambe, più lunga.\\
 Dal punto di vista della griglia si assegnano i seguenti pesi:
 \begin{itemize}
   \item $w(diagonale)=1$
-  \item $w(verticale)=-1\cdot i$
-  \item $w(orizzontale)=-1\cdot j$
+  \item $w(verticale)=-i$
+  \item $w(orizzontale)=-j$
 \end{itemize}
-Dove gli archi diagonali rappresentano un match.\\
+Dove gli archi diagonali rappresentano un match ed $i$ e $j$ sono gli indici che
+scorrono le due stringhe, ovvero rispettivamente sulle righe e sulle colonne.\\
 \textbf{Qualora si ottenga un valore negativo viene messo 0}.\\
 Si ragiona quindi tenendo traccia del valore massimo raggiungo, tenendo traccia,
-per una maggior efficienza, anche delle coordinate. Una volta completata la
+per una maggior efficienza, anche delle coordinate. Una volta completata la
 griglia si avrà che il valore massimo corrisponde al nodo \textit{sink} del
 cammino composto dalla più lunga sequenza possibile di archi diagonali
 consecutivi. Qualsiasi altra ``operazione'', con archi orizzontali o diagonali,
 comporta infatti una perdita di punteggio e ogni volta che un cammino diagonale
 termina viene azzerato il punteggio, tramite pesi negativi pesati sugli
-indici. Il valore massimo quindi altro non è che 
+indici. Azzerando ogni volta si permette di avere la costruzione di un eventuale
+cammino diagonale che assegna man mano il valore corrispondente alla lunghezza
+del cammino stesso, avendo che la diagonale pesa 1. Il valore massimo quindi
+altro non è che  
 la lunghezza della \textit{longest common substring}. Sapendo che archi
 diagonali corrispondono a match tra le due sequenze si ottiene che tale cammino
 corrisponde alla \textit{longest common substring}. \\
@@ -431,7 +435,7 @@ Per ricostruire la \textit{longest common substring} si parte dal nodo
 carattere corrispondente e si risale tutto il cammino diagonale, aggiungendo di
 volta in volta in testa il carattere letto. Ci si ferma quindi quando non si ha
 più un nodo il cui punteggio è stato ottenuto tramite un arco diagonale.
-\newpage
+
 Vediamo quindi un esempio pratico. Siano date:
 \begin{itemize}
   \item AAACGCGCTTTTTCCCAT
@@ -449,5 +453,4 @@ ricostruisce:
 \end{center}
 che è appunto la \textit{longest common substring} delle due sequenze in input.
 \end{document}
-
 % LocalWords:  sottostringhe sottostringa pseudocodice lowercase
