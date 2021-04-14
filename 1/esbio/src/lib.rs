@@ -938,6 +938,7 @@ mod tests {
         assert_eq!(muts.1, true);
         assert_eq!(muts.0.len(), 2);
     }
+    
     /*#[test]
     fn test_es2_2() {
         let seq1 = "AATTAAAGTTTAACC".to_string();

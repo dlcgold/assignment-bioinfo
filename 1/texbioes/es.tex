@@ -196,7 +196,7 @@ Si ha quindi il seguente pseudocodice dell'algoritmo, che ritorna $\top$ o
 $\bot$ a seconda che sia possibile che $seq2$ sia una versione infettata di
 $seq1$:
 \begin{algorithm}[H]
-  \begin{algorithmic}
+  \begin{algorithmic}[1]
     \Function{CheckInfection}{$seq1,seq2$}
     \If{$length(seq1) == 0$ \textbf{or} $length(seq2)==0$}
     \State \textbf{return} $\bot$
@@ -305,7 +305,7 @@ visitata interamente, anche la seconda sia conclusa. In caso contrario si
 restituisce $\bot$.\\
 Si ha quindi il seguente pseudocodice.
 \begin{algorithm}[H]
-  \begin{algorithmic}
+  \begin{algorithmic}[1]
     \Function{CheckInfection}{$seq1,seq2$}
     \State $m \gets length(seq1)$
     \State $n \gets length(seq2)$
@@ -361,6 +361,7 @@ punto di vista computazionale, assumendo che la funzione \texttt{length} abbia
 costo lineare si ha in entrambi i casi un tempo quadratico nel caso peggiore,
 anche se si potrebbe fare uno studio più approfondito. 
 \chapter{Esercizio 2}
+\section{Versione 1}
 Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$ (anche se come
 nell'esercizio precedente poi si procederà con il \texttt{lowercase})
 indicizzate a partire dalla posizione 0, per comodità.\\
@@ -376,6 +377,8 @@ Si fanno le seguenti assunzioni:
   \item si assume che le sequenze siano tali per cui il loro \textit{kmer-set}
   coincida con il loro \textit{spettro}. In altri termini le sequenze sono tali
   per cui si hanno solo \textit{kmer} univoci
+  \item si assume, per pura semplicità, di avere in input sequenze lunghe almeno
+  quanto un singolo \textit{kmer}
 \end{itemize}
 In base alle assunzioni precedenti si può anche assumere che, calcolati i due
 \textit{spettri}, che sono \textit{spettri senza ripetizioni}, relativi alle due
@@ -478,7 +481,7 @@ inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.
 Passiamo ora allo pseudocodice principale.
 \begin{algorithm}[H]
   \small
-  \begin{algorithmic}
+  \begin{algorithmic}[1]
     \Function{CheckMutation}{$seq1$, $seq2$}
     \If{$length(seq1)\neq length(seq2)$}
     \State \textbf{return} $([\,\,\,],\bot)$
@@ -497,13 +500,13 @@ Passiamo ora allo pseudocodice principale.
     \EndIf
     \State $kmers1\gets getKmers(seq1,6)$
     \State $kmers2\gets getKmers(seq2,6)$
-    \If{$length(kmers1)\neq n-(k-1)$ \textbf{or} $length(kmers2)\neq n-(k-1)$}
+    \If{$length(kmers1)\neq n-5$ \textbf{or} $length(kmers2)\neq n-5$}
     \State \textbf{return} $([\,\,\,],\bot)$
     \EndIf
     \While {$i < length(kmers1)$}
     \If{$kmers1[i][5]\neq kmers2[i][5]$}
-    \State $push(muts, newMutation(kmers1[i][5], kmers2[i][5], (k-1)+i))$
-    \State $i\gets i+k$
+    \State $push(muts, newMutation(kmers1[i][5], kmers2[i][5], 5+i))$
+    \State $i\gets i+6$
     \Else
     \State $i\gets i+1$
     \EndIf
@@ -511,7 +514,7 @@ Passiamo ora allo pseudocodice principale.
     \State \textbf{return} $(muts, \top)$
     \EndFunction
   \end{algorithmic}
-  \caption{}
+  \caption{Algoritmo basato su \textit{kmer} per mutazioni}
 \end{algorithm}
 Dove con $i$ teniamo traccia dei \textit{kmer} da confrontare, eventualmente
 saltando i confronti superflui sopra descritti.
@@ -577,8 +580,9 @@ Vediamo quindi qualche esempio.
   \textit{kmer} di indice 1, ovvero ``atcttg'' e ``atctta'', proseguendo poi
   come nell'esempio precedente.
 \end{esempio}
+\section{Versione 2}
 Per pura curiosità si può fare anche un piccolo ragionamento ulteriore. Con le
-assunzioni date si può costruire un \textbf{grafo di De Brujin} delle due
+assunzioni date si può costruire un \textbf{grafo di De Bruijn} delle due
 stringhe e vedere che non si hanno cicli, non essendoci \textit{kmer} non
 univoci all'interno di ciascuna stringa. Le mutazioni possono essere quindi
 viste come le coppie di caratteri 
@@ -589,23 +593,101 @@ sequenze (potrebbero essere due diversi) è un nodo privo di archi entranti,
 essendo quindi un nodo \textit{source}, e
 l'ultimo nodo calcolato per ciascuna delle due
 sequenze (potrebbero essere due diversi) è un nodo privo di archi uscenti,
-essendo un nodo \textit{sink}. È quindi possibile ragionare in modo analogo a
-sopra, saltando il confronto tra i \textit{kmer} di nodi che formano i due rami
-di una \textbf{bubble} e tenendo conto del numero di nodi per l'indice della
-mutazione. \\
+essendo un nodo \textit{sink}. Basta quindi percorrere un cammino dal primo nodo
+(al più del caso con mismatch in prima base che verrà trattato dopo) fino ad un
+nodo \textit{sink}, privo di figli, e ogni volta che si incontra un nodo con due
+figli salvare la mutazione e proseguire su uno dei due cammini della
+\textbf{bubble}, indifferentemente. Ogni avanzamento di nodo comporta
+l'incremento di indice utile a salvare la posizione della mutazione.\\
+Si termina quando si arriva ad un nodo privo di figli.
 Qualora si abbia una mutazione nella prima base allora si avranno due
 nodi privi di archi entranti che puntano però allo stesso nodo. Si procede
 quindi aggiungendo la prima base come mutazione e proseguendo con il
 ragionamento visto sopra a partire da questo nodo a cui puntano.\\
-A seguire i due grafi relativi ai due esempi, dove è possibile verificare quanto
-detto. Si noti che senza ulteriori assunzioni si perde esplicita referenza di
-quale base che muta appartiene alla sequenza di riferimento o a quella mutata,
-ma un controllo per capirlo è facilmente eseguibile usando l'indice.
-\begin{figure}[H]
+I due grafi sono visualizzabili in figura \ref{fig:dbg}.
+\begin{figure}
   \centering
-  \includegraphics[scale = 0.33]{img/mut.pdf}
-  \includegraphics[scale = 0.33]{img/mutns.pdf}
+  \includegraphics[scale = 0.38]{img/mut.pdf}
+  \includegraphics[scale = 0.38]{img/mutns.pdf}
+  \caption{Grafi di De Bruijn relativi, rispettivamente, ai due esempi della
+    ``versione 1''}
+  \label{fig:dbg}
 \end{figure}
+Facciamo le seguenti assunzioni per comodità:
+\begin{itemize}
+  \item la funzione \texttt{createDBG(v, k)} prende in input un vettore $v$ di
+  stringhe e un intero $k$ e restituisce un oggetto rappresentante il
+  \textit{grafo di De Bruijn} costruito a  
+  partire dalle sequenze contenute in $v$. Tali sequenze sono in questo caso due
+  e sono supposte valide secondo le assunzioni fatte all'inizio
+  \item si supponga di avere un oggetto \texttt{dbg} rappresentante il
+  \textit{grafo di De Bruijn}. Si ha che la funzione \texttt{startNodes(dbg)}
+  restituisce un vettore contenente i puntatori ai nodi iniziali/sources, ovvero
+  i nodi 
+  senza archi entranti del \textit{grafo di De Bruijn}. Per le assunzioni fatte,
+  ho almeno un nodo iniziale e al più due
+  \item si supponga che ogni nodo sia rappresentato da un oggetto e che, dato un
+  nodo $n$ si abbiano le seguenti funzioni:
+  \begin{itemize}
+    \item \texttt{label(n)}, che restituisce il \textit{(k-1)-mer} che
+    etichetta il nodo $n$
+    \item \texttt{outDegree(n)}, che restituisce il numero di archi uscenti dal
+    nodo $n$
+    \item \texttt{outLabel(n)}, che restituisce un vettore con le etichette
+    degli archi uscenti dal nodo $n$
+    \item \texttt{nextNodes(n)}, che fornisce un vettore di puntatori ai nodi
+    successivi/figli di $n$
+ \end{itemize}
+\end{itemize}
+Ovviamente avendo due sequenze in input che garantiscono le assunzioni iniziali
+quando si parla di vettori si parla sempre di vettori che possono essere o di
+lunghezza uno o due.
+\newpage
+Vediamo quindi uno pseudocodice possibile per trovare le mutazione usando il
+\textit{grafo di De Bruijn}. L'output è dello stesso formato del precedente
+algoritmo. 
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}[1]
+    \Function{CheckMutation}{$seq1$, $seq2$}
+    \If{$length(seq1)\neq length(seq2)$}
+    \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \If{$length(seq1)==0$ \textbf{or} $length(seq2)==0$}
+    \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \State $muts \gets [\,\,\,]$
+    \State $i\gets 0$
+    \State $seq1\gets lowercase(seq1)$
+    \State $seq2\gets lowercase(seq2)$
+    \State $dbg\gets createDBG([seq1, seq2], 6)$
+    \State $s \gets startNodes(dbg)$
+    \If{$length(s) \neq 1$}
+    \State $push(muts, newMutation(label(s[0])[0], label(s[1])[0], 0))$ 
+    \State $i\gets i+1$
+    \EndIf
+    \State $curr\gets s[0]$
+    \While {$\top$}
+    \If{$outDegree(curr) == 2$}
+    \State $l\gets outLabel(curr)$
+    \State $push(muts, newMutation(label(l[0])[0], label(l[1])[0], i+5))$ 
+    \EndIf
+    \If{$outDegree(curr)\neq 0$}
+    \State $i\gets i+1$
+    \State $curr\gets nextNodes(curr)[0]$
+    \Else
+    \State \textbf{break}
+    \EndIf
+    \EndWhile
+    \State \textbf{return} $(muts, \top)$
+    \EndFunction
+  \end{algorithmic}
+  \caption{Algoritmo basato su \textit{kmer} e \textit{grafo di De Bruijn} per
+  mutazioni} 
+\end{algorithm}
+\textit{Si noti che senza ulteriori assunzioni si perde esplicita referenza di
+quale base della mutazione appartiene alla sequenza di riferimento o a quella
+mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice.}
 \chapter{Esercizio 3}
 La \textbf{distanza di Hamming} tra due stringhe, che si assumono di uguale
 lunghezza, è 
@@ -740,5 +822,11 @@ ricostruisce:
   CGCGCTTTTT
 \end{center}
 che è appunto la \textit{longest common substring} delle due sequenze in input.
+\chapter{Link al codice}
+Durante lo svolgimento dell'assignment è stato elaborato anche il codice in
+\textit{Rust} per i vari esercizi, con i vari unit test correlati. L'unica
+eccezione è l'algoritmo di studio del \textit{grafo 
+di De Bruijn} del quale comunque è presente una bozza di codice per creare lo
+stesso e generare il relativo file \texttt{.dot}.
 \end{document}
 % LocalWords:  sottostringhe sottostringa pseudocodice lowercase Hamming
