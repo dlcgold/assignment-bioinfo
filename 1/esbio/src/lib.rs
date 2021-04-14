@@ -351,14 +351,15 @@ impl Dbg {
     pub fn to_dot(&self, output: String) {
         let mut fileout = File::create(output).expect("error");
         fileout
-            .write("digraph sample{\n".as_bytes())
+            //.write("digraph sample{\n rankdir=\"LR\";\n".as_bytes())
+            .write("digraph sample{\n nodesep=\"0.3\";\nranksep=\"0.3\";\n ".as_bytes())
             .expect("error");
         for edge in &self.edges {
             if edge.0.len() <= 6 {
                 fileout
                     .write(
                         format!(
-                            "\t\"{}\" -> \"{}\" [ label = \"{}\" ];\n",
+                            "\t\"{}\" -> \"{}\" [ label = \" {}\" ];\n",
                             edge.0,
                             edge.1,
                             edge.1.chars().last().unwrap()
@@ -376,7 +377,7 @@ impl Dbg {
                 fileout
                     .write(
                         format!(
-                            "\t\"{}\" -> \"{}\" [ label = \"{}\" ];\n",
+                            "\t\"{}\" -> \"{}\" [ label = \" {}\"];\n",
                             start,
                             end,
                             edge.1.chars().last().unwrap()
@@ -397,12 +398,12 @@ impl Dbg {
     }
 }
 
-fn check_mutations(s1: &String, s2: &String) -> Vec<Mutation> {
+fn check_mutations_old(s1: &String, s2: &String) -> Vec<Mutation> {
     let mut mutations = Vec::new();
     let seq1 = s1.to_lowercase();
     let seq2 = s2.to_lowercase();
     let dbg = Dbg::new(vec![seq1.clone(), seq2.clone()], 5);
-    println!("{},{}", &seq1, &seq2);
+    //println!("{},{}", &seq1, &seq2);
     //println!("{:?}", dbg.edges);
     //dbg.count_bubble();
     dbg.to_dot("outputs/mut.dot".to_string());
@@ -542,12 +543,12 @@ fn check_manhattan(s1: &String, s2: &String, h: i32, v: i32, d: i32) -> i32 {
         }
     }
     distance = M[m][n];
-    for m in M {
+    /*for m in M {
         println!("{:?}", m);
     }
     for m in B {
         println!("{:?}", m);
-    }
+    }*/
     distance
 }
 
@@ -765,6 +766,52 @@ fn check_virus2(s1: &String, s2: &String) -> bool {
     check
 }
 
+fn check_mutations(s1: &String, s2: &String, k: i32) -> (Vec<Mutation>, bool) {
+
+    if s1.len() != s2.len() || s1.len() == 0 || s2.len() == 0 {
+        return (Vec::new(), false);
+    }
+    let mut mutations: Vec<Mutation> = Vec::new();
+    let seq1 = s1.to_lowercase();
+    let seq2 = s2.to_lowercase();
+    let dbg = Dbg::new(vec![seq1.clone(), seq2.clone()], k);
+    let dbg1 = Dbg::new(vec![seq1.clone()], k);
+    let dbg2 = Dbg::new(vec![seq2.clone()], k);
+    dbg.to_dot("outputs/mut.dot".to_string());
+    dbg1.to_dot("outputs/mut1.dot".to_string());
+    dbg2.to_dot("outputs/mut2.dot".to_string());
+    let kmer1 = get_kmers_unique(&mut vec![seq1.clone()], k);
+    let kmer2 = get_kmers_unique(&mut vec![seq2.clone()], k);
+
+    if kmer1.len() != seq1.len() - ((k - 1) as usize) || kmer2.len() != seq2.len() - ((k - 1) as usize) {
+        return (Vec::new(), false);
+    }
+    //println!("{:?}\n{:?}", kmer1, kmer2);
+
+    //println!("{:?}\n{:?}", &seq1, &seq2);
+    for i in 0..kmer1.len() {
+        println!("\\item confornto \"{}\" con \"{}\"", kmer1[i], kmer2[i]);
+    }
+    let mut curr_ind: usize = 0;
+    if seq1.chars().next().unwrap() != seq2.chars().next().unwrap() {
+        mutations.push(Mutation::new(seq1.chars().next().unwrap(),
+                                     seq2.chars().next().unwrap(),
+                                     0));
+        curr_ind += 1;
+    }
+    while curr_ind < kmer1.len() {
+        if kmer1[curr_ind].chars().last().unwrap() != kmer2[curr_ind].chars().last().unwrap() {
+            mutations.push(Mutation::new(kmer1[curr_ind].chars().last().unwrap(),
+                                         kmer2[curr_ind].chars().last().unwrap(),
+                                         k as usize - 1 + curr_ind));
+            curr_ind += (k as usize);
+        } else {
+            curr_ind += 1;
+        }
+    }
+    (mutations, true)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{check_virus, check_mutations, get_kmers_unique_map, check_manhattan, lcs, check_virus2, lcs_old};
@@ -834,23 +881,71 @@ mod tests {
 
     #[test]
     fn test_es2_1() {
-        /*let seq1 = "AATTAAATTAAAAAGCGGCCCGCTTTATTTCC".to_string();
-        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();*/
-        let seq1 = "AATTAAAGT".to_string();
-        let seq2 = "ATTTAAAAT".to_string();
-        let muts = check_mutations(&seq1, &seq2);
-        println!("mutations: {:?}", muts);
-        assert_eq!(2, muts.len());
+        let seq1 = "ATCTTGCATTACCGCCCCAATC".to_string();
+        let seq2 = "ATCTTACATTACCGTCCCAACC".to_string();
+        let muts = check_mutations(&seq1, &seq2, 6);
+         println!("mutations: {:?}", muts);
+        assert_eq!(muts.1, true);
+        assert_eq!(muts.0.len(), 3);
     }
 
     #[test]
+    fn test_es2_2() {
+        let seq1 = "TATCTTGCATTACCGCCCCAATC".to_string();
+        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
+        let muts = check_mutations(&seq1, &seq2, 6);
+        println!("mutations: {:?}", muts);
+        assert_eq!(muts.1, true);
+        assert_eq!(muts.0.len(), 4);
+    }
+
+    #[test]
+    fn test_es2_3() {
+        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
+        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
+        let muts = check_mutations(&seq1, &seq2, 5);
+        //println!("mutations: {:?}", muts);
+        assert_eq!(muts.1, false);
+        assert_eq!(muts.0.len(), 0);
+    }
+
+    #[test]
+    fn test_es2_4() {
+        let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
+        let seq2 = "".to_string();
+        let muts = check_mutations(&seq1, &seq2, 5);
+        //println!("mutations: {:?}", muts);
+        assert_eq!(muts.1, false);
+        assert_eq!(muts.0.len(), 0);
+    }
+
+    #[test]
+    fn test_es2_5() {
+        let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
+        let seq2 = "TATCTTGCATTACCGCCCCCAAC".to_string();
+        let muts = check_mutations(&seq1, &seq2, 5);
+        //println!("mutations: {:?}", muts);
+        assert_eq!(muts.1, true);
+        assert_eq!(muts.0.len(), 0);
+    }
+
+    #[test]
+    fn test_es2_6() {
+        let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
+        let seq2 = "AATCTTGCATTACCGCCCCCAAA".to_string();
+        let muts = check_mutations(&seq1, &seq2, 5);
+        println!("mutations: {:?}", muts);
+        assert_eq!(muts.1, true);
+        assert_eq!(muts.0.len(), 2);
+    }
+    /*#[test]
     fn test_es2_2() {
         let seq1 = "AATTAAAGTTTAACC".to_string();
         let seq2 = "ATTTAAAATTTAAC".to_string();
         let muts = check_mutations(&seq1, &seq2);
         println!("mutations: {:?}", muts);
         assert_eq!(3, muts.len());
-    }
+    }*/
 
     /*#[test]
     fn test_es2_3() {
@@ -875,7 +970,7 @@ mod tests {
         let seq1 = "AAACTTT".to_string();
         let seq2 = "AAAGTTC".to_string();
         let distance = check_manhattan(&seq1, &seq2, 1, 0, 0);
-        println!("hamming: {:?}", distance);
+        //println!("hamming: {:?}", distance);
         assert_eq!(distance, 2);
     }
 
@@ -884,8 +979,17 @@ mod tests {
         let seq1 = "AAACTTTTTTTTT".to_string();
         let seq2 = "AAAGTTCCGAGCG".to_string();
         let distance = check_manhattan(&seq1, &seq2, 1, 0, 0);
-        println!("hamming: {:?}", distance);
+        //println!("hamming: {:?}", distance);
         assert_eq!(distance, 8);
+    }
+
+    #[test]
+    fn test_es3_3() {
+        let seq1 = "AAACTT".to_string();
+        let seq2 = "AAACTT".to_string();
+        let distance = check_manhattan(&seq1, &seq2, 1, 0, 0);
+        //println!("hamming: {:?}", distance);
+        assert_eq!(distance, 0);
     }
 
     #[test]
@@ -916,7 +1020,6 @@ mod tests {
         //assert_eq!(3, 3);
         assert_eq!(subs, "AAACGCGCTTTTT");
     }
-
 
 
     #[test]

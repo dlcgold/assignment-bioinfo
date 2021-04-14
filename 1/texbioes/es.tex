@@ -13,7 +13,7 @@
 \usepackage{engrec}
 \usepackage{rotating}
 \usepackage[safe,extra]{tipa}
-\usepackage{showkeys}
+%\usepackage{showkeys}
 \usepackage{multirow}
 \usepackage{hyperref}
 \usepackage{mathtools}
@@ -21,6 +21,7 @@
 \usepackage{enumerate}
 \usepackage{braket}
 \usepackage{marginnote}
+\usepackage{ulem}
 \usepackage{pgfplots}
 \usepackage{cancel}
 \usepackage{polynom}
@@ -84,6 +85,7 @@
   \markboth{\chaptername
     \ \thechapter.\ #1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+\tableofcontents
 \chapter{esercizio 1}
 \section{Versione 1}
 Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$ indicizzate a partire dalla
@@ -359,6 +361,251 @@ punto di vista computazionale, assumendo che la funzione \texttt{length} abbia
 costo lineare si ha in entrambi i casi un tempo quadratico nel caso peggiore,
 anche se si potrebbe fare uno studio più approfondito. 
 \chapter{Esercizio 2}
+Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$ (anche se come
+nell'esercizio precedente poi si procederà con il \texttt{lowercase})
+indicizzate a partire dalla posizione 0, per comodità.\\
+Si fanno le seguenti assunzioni:
+\begin{itemize}
+  \item si assume che le mutazione siano solo cambi di base, non avendo quindi
+  inserzioni o delezioni
+  \item si assume che, non avendo inserzioni o delezioni, le due sequenze siano
+  di egual lunghezza per poter avere un input valido per l'algoritmo
+  \item si assume che si può avere una mutazione solo dopo almeno 5 basi non
+  mutate 
+  \item si assume che la prima base della sequenza può mutare
+  \item si assume che le sequenze siano tali per cui il loro \textit{kmer-set}
+  coincida con il loro \textit{spettro}. In altri termini le sequenze sono tali
+  per cui si hanno solo \textit{kmer} univoci
+\end{itemize}
+In base alle assunzioni precedenti si può anche assumere che, calcolati i due
+\textit{spettri}, che sono \textit{spettri senza ripetizioni}, relativi alle due
+sequenze, si abbia che essi siano di cardinalità uguale. Per verificare che il
+\textit{kmer-set} sia della stessa cardinalità dello spettro basta verificare
+che, assumendo $kmers$ il \textit{kmer-set} (calcolato per un certo $k$) di una
+certa sequenza $seq$, non valga: 
+\[length(kmers) \neq length(seq)-(k-1)\]
+Procediamo quindi descrivendo l'idea dietro l'algoritmo. L'idea principale è
+quella di calcolare i \textit{kmer} di una lunghezza $k$ non causale e di
+evitare confronti inutili. Assumendo di avere che una mutazione è possibile sse
+almeno le 5 basi precedenti non sono mutazioni, in quanto dopo una mutazione
+abbiamo assunto esserci almeno 5 basi non mutate, sono di fronte ad un caso
+``limite'' del tipo:
+\begin{center}
+  \textit{{\color{red}M}BBBBB{\color{red}M}}
+\end{center}
+Indicando con $M$ le mutazioni e con $B$ le basi non mutate. Ne segue
+immediatamente che \textit{kmer} calcolati con $k=6$ sono i \textit{kmer} di
+cardinalità massima tali per cui posso avere al più una singola mutazione per
+\textit{kmer}. \\
+Indicando con $seq1$ la sequenza di riferimento e con $seq2$ la sequenza mutata
+si ha quindi che, per le assunzioni fatte, posso fare un confronto ``1:1'' dei
+\textit{kmer-set}, sapendo che essi sono di cardinalità uguale.\\
+Si noti però che un confronto diretto sarebbe ``inutile'' in quanto, avendo
+sicuramente almeno 5 basi non mutate dopo una mutazione posso saltare il
+confronto di 5 \textit{kmer}, in quanto tutti e 5 aggiungerebbero in coda una
+base sicuramente non mutata. Inoltre, per le assunzioni fatte, è possibile anche
+solo confrontare, di volta in volta, i due simboli finali dei due \textit{kmer}
+e non i \textit{kmer} interi in quanto tutto il prefisso del \textit{kmer}, che
+termina in penultima posizione della stringa, è stato già verificato negli step
+precedenti. Qualora il simbolo finale sia diverso si è di fronte ad una
+mutazione e, avendo \textit{kmer-set} di uguale cardinalità e quindi
+confrontando sempre i due \textit{kmer} i-esimi, è possibile risalire all'indice
+della mutazione basandosi su tale $i$ e sulla lunghezza dei \textit{kmer},
+quindi $6$.\\
+Una volta individuata la mutazione si procede a salvare in una struttura
+adeguata le seguenti informazioni:
+\begin{itemize}
+  \item base presente nella sequenza di riferimento, \texttt{b1}
+  \item base mutata presente nella seconda sequenza, \texttt{b2}
+  \item indice della mutazione, \texttt{i}
+\end{itemize}
+In merito si assume che \texttt{newMutation(b1, b2, i)} restituisca una
+mutazione con le specifiche indicate come argomento.\\
+Bisogna fare un'ultima osservazione. Si è assunto che la primissima base possa
+subire mutazione. Si verifica quindi se le due basi iniziali siano diverse e,
+qualora lo fossero, si aggiunge la mutazione e ci si sposta ai due \textit{kmer}
+di posizione $1$ nei due \textit{kmer-set}, sapendo che essi non conterranno
+sicuramente la prima base delle rispettive sequenze e quindi, per le assunzioni
+fatte, continueranno a contenere al più una mutazione, nell'ultimo
+carattere. Dopo questa osservazione 
+si procede regolarmente con l'algoritmo.\\
+Per praticità l'algoritmo restituisce una tupla contenente:
+\begin{enumerate}
+  \item il vettore delle mutazioni
+  \item un booleano che segnala se i vincoli del problema sono stati tutti
+  rispettati 
+\end{enumerate}
+Quindi si hanno vari casi:
+\begin{itemize}
+  \item un vettore di mutazioni non nullo (in tal caso sicuramente il booleano
+  presenta $\top$)
+  \item un vettore di mutazioni nullo e in tal caso:
+  \begin{itemize}
+    \item se il booleano è $\top$ significa che le due sequenze rispettano tutti
+    i vincoli ma non si hanno mutazioni
+    \item se il booleano è $\bot$ significa che qualche vincolo è stato
+    infranto, ovvero stringhe di lunghezza diversa, stringhe nulle e stringhe
+    che prevedono \textit{kmer} non univoci
+  \end{itemize}
+\end{itemize}
+\textit{L'assunzione di avere distanza 5 tra ogni mutazione non viene verificata
+  e viene assunta come assioma}.\\
+Vediamo quindi prima lo pseudocodice e poi qualche esempio.\\
+Esplicitiamo prima la funzione \texttt{getKmers} che, data una sequenza $seq$ e
+un intero $k$, restituisce un vettore di stringhe, che per le assunzioni è sia
+il \textit{kmer-set} che lo \textit{spettro}, mantenendo l'ordine, quindi il
+\textit{kmer} che nel vettore ha indice i è il \textit{kmer} che inizia
+all'indice $i$ della sequenza. Quest'ultimo ragionamento è possibile solo grazie
+alle assunzioni fatte: \textit{kmer} non univoci non permetterebbero questo. Con
+$s[i,j]$ si intende la sottostringa di $s$ dall'indice $i$ all'indice $j$
+inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.
+\begin{algorithm}[H]
+  \begin{algorithmic}
+    \Function{getKmers}{$seq$, $k$}
+    \State $kmers \gets [\,\,\,]$
+    \While {$length(seq)\geq k$}
+    \State $push(kmers, seq[0,k-1])$
+    \State $seq gets seq[1,]$
+    \EndWhile
+    \State \textbf{return} $kmers$
+    \EndFunction
+  \end{algorithmic}
+  \caption{Funzione di calcolo dei \textit{kmer}}
+\end{algorithm}
+\textit{Si noti che la funzione consuma la sequenza ma potrebbe essere
+  facilmente editato l'algoritmo per evitare questa cosa}.
+\newpage
+Passiamo ora allo pseudocodice principale.
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}
+    \Function{CheckMutation}{$seq1$, $seq2$}
+    \If{$length(seq1)\neq length(seq2)$}
+    \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \If{$length(seq1)==0$ \textbf{or} $length(seq2)==0$}
+    \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \State $muts \gets [\,\,\,]$
+    \State $i\gets 0$
+    \State $n\gets length(seq1)$
+    \State $seq1\gets lowercase(seq1)$
+    \State $seq2\gets lowercase(seq2)$
+    \If{$seq1[0]\neq seq2[0]$}
+    \State $push(muts, newMutation(seq1[0], seq2[0], 0))$
+    \State $i \gets index+1$
+    \EndIf
+    \State $kmers1\gets getKmers(seq1,6)$
+    \State $kmers2\gets getKmers(seq2,6)$
+    \If{$length(kmers1)\neq n-(k-1)$ \textbf{or} $length(kmers2)\neq n-(k-1)$}
+    \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \While {$i < length(kmers1)$}
+    \If{$kmers1[i][5]\neq kmers2[i][5]$}
+    \State $push(muts, newMutation(kmers1[i][5], kmers2[i][5], (k-1)+i))$
+    \State $i\gets i+k$
+    \Else
+    \State $i\gets i+1$
+    \EndIf
+    \EndWhile
+    \State \textbf{return} $(muts, \top)$
+    \EndFunction
+  \end{algorithmic}
+  \caption{}
+\end{algorithm}
+Dove con $i$ teniamo traccia dei \textit{kmer} da confrontare, eventualmente
+saltando i confronti superflui sopra descritti.
+\newpage
+Vediamo quindi qualche esempio.
+\begin{esempio}
+  Siano date in input:
+  \begin{itemize}
+    \item atcttgcattaccgccccaatc
+    \item atcttacattaccgtcccaacc
+  \end{itemize}
+  Le due sequenze rispettano tutte le assunzioni.\\
+  Calcolati i \textit{kmer} si procede con il confronto, sapendo che le due
+  sequenze iniziano con la stessa base. L'indice dell'enumerazione corrisponde
+  all'indice $i$ dell'algoritmo.
+  \begin{enumerate}[start=0]
+    \item confronto "atcttg" con "atctta". Ho un mismatch tra gli ultimi simboli
+    ``g'' e ``a'', che sono all'indice 5 essendo noi al \textit{kmer} di indice
+    0 (si ha infatti $(6-1)+0=5$). Aggiungo quindi la mutazione \texttt{(g,a,5)}
+    e aggiorno l'indice al valore $i+6$, ovvero, in questo caso, $6$. Salto
+    quindi tutti i confronti e riparto dal 6
+    \item \sout{confronto "tcttgc" con "tcttac"}
+    \item \sout{confronto "cttgca" con "cttaca"}
+    \item \sout{confronto "ttgcat" con "ttacat"}
+    \item \sout{confronto "tgcatt" con "tacatt"}
+    \item \sout{confronto "gcatta" con "acatta"}
+    \item confronto "cattac" con "cattac". Non ho mismatch quindi faccio $i+1$ e
+    basta andando al confronto successivo
+    \item confronto "attacc" con "attacc". Non ho mismatch quindi faccio $i+1$ e
+    basta andando al confronto successivo
+    \item confronto "ttaccg" con "ttaccg". Non ho mismatch quindi faccio $i+1$ e
+    basta andando al confronto successivo
+    \item confronto "taccgc" con "taccgt". Ho un mismatch tra gli ultimi simboli
+    ``c'' e ``t'', che sono all'indice 14 essendo noi al \textit{kmer} di indice
+    9 (si ha infatti $(6-1)+9=14$). Aggiungo quindi la mutazione
+    \texttt{(c,t,14)} 
+    e aggiorno l'indice al valore $i+6$, ovvero, in questo caso, $15$. Salto
+    quindi tutti i confronti e riparto dal 15
+    \item \sout{confronto "accgcc" con "accgtc"}
+    \item \sout{confronto "ccgccc" con "ccgtcc"}
+    \item \sout{confronto "cgcccc" con "cgtccc"}
+    \item \sout{confronto "gcccca" con "gtccca"}
+    \item \sout{confronto "ccccaa" con "tcccaa"}
+    \item confronto "cccaat" con "cccaac". Ho un mismatch tra gli ultimi simboli
+    ``t'' e ``c'', che sono all'indice 20 essendo noi al \textit{kmer} di indice
+    15 (si ha infatti $(6-1)+15=20$). Aggiungo quindi la mutazione
+    \texttt{(t,c,20)} 
+    e aggiorno l'indice al valore $i+6$, ovvero, in questo caso, $26$. Essendo
+    l'indice maggiore stretto della cardinalità del \textit{kmer-set},
+    interrompo l'esecuzione, sapendo che comunque non potrei avere in ogni caso
+    ulteriori mutazioni
+    \item \sout{confronto "ccaatc" con "ccaacc"}
+  \end{enumerate}
+\end{esempio}
+\begin{esempio}
+  Più brevemente vediamo un altro input:
+  \begin{itemize}
+    \item tatcttgcattaccgccccaatc
+    \item gatcttacattaccgtcccaacc
+  \end{itemize}
+  In questo casi si noti come la prima base non combaci, si procede quindi
+  salvando la mutazione \texttt{(t,g,0)} e facendo iniziare il confronto tra i
+  \textit{kmer} di indice 1, ovvero ``atcttg'' e ``atctta'', proseguendo poi
+  come nell'esempio precedente.
+\end{esempio}
+Per pura curiosità si può fare anche un piccolo ragionamento ulteriore. Con le
+assunzioni date si può costruire un \textbf{grafo di De Brujin} delle due
+stringhe e vedere che non si hanno cicli, non essendoci \textit{kmer} non
+univoci all'interno di ciascuna stringa. Le mutazioni possono essere quindi
+viste come le coppie di caratteri 
+che etichettano l'inizio di una \textbf{bubble} nel grafo, ovvero le etichette
+degli archi di un nodo che ha due archi uscenti, Vista l'essenza di
+cicli, si ha che il primo \textit{kmer} calcolato per ciascuna delle due
+sequenze (potrebbero essere due diversi) è un nodo privo di archi entranti,
+essendo quindi un nodo \textit{source}, e
+l'ultimo nodo calcolato per ciascuna delle due
+sequenze (potrebbero essere due diversi) è un nodo privo di archi uscenti,
+essendo un nodo \textit{sink}. È quindi possibile ragionare in modo analogo a
+sopra, saltando il confronto tra i \textit{kmer} di nodi che formano i due rami
+di una \textbf{bubble} e tenendo conto del numero di nodi per l'indice della
+mutazione. \\
+Qualora si abbia una mutazione nella prima base allora si avranno due
+nodi privi di archi entranti che puntano però allo stesso nodo. Si procede
+quindi aggiungendo la prima base come mutazione e proseguendo con il
+ragionamento visto sopra a partire da questo nodo a cui puntano.\\
+A seguire i due grafi relativi ai due esempi, dove è possibile verificare quanto
+detto. Si noti che senza ulteriori assunzioni si perde esplicita referenza di
+quale base che muta appartiene alla sequenza di riferimento o a quella mutata,
+ma un controllo per capirlo è facilmente eseguibile usando l'indice.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.33]{img/mut.pdf}
+  \includegraphics[scale = 0.33]{img/mutns.pdf}
+\end{figure}
 \chapter{Esercizio 3}
 La \textbf{distanza di Hamming} tra due stringhe, che si assumono di uguale
 lunghezza, è 
@@ -368,7 +615,7 @@ una stringa all'altra.\\
 Ipotizzando di voler studiare la distanza di Hamming tra due sequenze tramite la
 griglia estesa si può ipotizzare di ragionare solo in termini di una delle due
 sequenze, ovvero considerare i pesi degli archi in ottica di una sola delle due
-sequenze. Si associano quindi i seguenti pesi:
+sequenze, come in figura \ref{fig:pes3}. Si associano quindi i seguenti pesi:
 \begin{itemize}
   \item $w(diagonale)=0$
   \item $w(verticale)=0$
@@ -380,10 +627,25 @@ o, in modo speculare se si vuole ragionare sull'altra sequenza:
   \item $w(verticale)=1$
   \item $w(orizzontale)=0$
 \end{itemize}
-Dove gli archi diagonali rappresentano un match.\\
+\begin{figure}
+  \centering
+  \includegraphics[scale = 1.3]{img/es31.pdf}
+  \caption{Rappresentazione grafica dei pesi degli archi.}
+  \label{fig:pes3}
+\end{figure}
+Dove, in entrambi i casi, gli archi diagonali rappresentano un match mentre, a
+seconda, gli archi verticali o quelli orizzontali tengono conto dei mismatch.\\
 A questo punto si cerca il cammino di peso minimo che parte dal nodo
 \textit{source}, posto in alto a sinistra, e arriva al nodo \textit{sink}, posto
-in basso a destra.\\
+in basso a destra. Essendo il nodo sink in posizione $(n,n)$, assumendo le due 
+sequenze lunghe $n$, garantisco che, calcolando il cammino che parte dal nodo
+source $(0,0)$ e arriva in quel nodo, si abbia il valore della
+distanza di Hamming, che prevede stringhe di ugual lunghezza. I vari valori
+degli altri nodi sono da considerarsi ``temporanei'' e non rappresentanti una
+distanza di Hamming. Potenzialmente però tutti e soli i nodi $(i,i)$, con
+$i\in[1,n)$, oltre quindi al nodo sink, potrebbero essere i nodi di fine di
+potenziali cammini dal source per calcolare la distanza di Hamming tra le
+sottostringhe di lunghezza $i$ delle due stringhe in input.\\
 Prendendo, ad esempio, in input:
 \begin{itemize}
   \item AAAGTTC
@@ -399,20 +661,37 @@ orizzontale pari a 1 e in verticale pari a 0, del tipo:
 Dove in verde è segnato il cammino minimo scelto. Avendo solo due archi
 orizzontali, che ricordiamo avere peso 1 mentre gli altri hanno peso nullo,
 possiamo concludere che la distanza di Hamming tra le due stringhe è 
-pari a 2.
+pari a 2.\\
+Per il ragionamento fatto sopra, se mi fermassi in $(3,3)$, per $i=3$, avrei la
+distanza di Hamming tra AAA e AAA. Il cammino dal source a $(3,3)$ è formato da
+sole diagonali e quindi ha costo 0, che è appunto al distanza di Hamming tra le
+due sottostringhe.
 \chapter{Esercizio 4}
 Il problema della \textbf{longest common substring} si pone l'obiettivo di
 estrarre, a partire da due stringhe di lunghezza arbitraria, anche non uguale,
 la sottostringa, comune ad entrambe, più lunga.\\
-Dal punto di vista della griglia si assegnano i seguenti pesi:
+Dal punto di vista della griglia si assegnano i seguenti pesi (come da figura
+\ref{fig:pes4}): 
 \begin{itemize}
   \item $w(diagonale)=1$
   \item $w(verticale)=-i$
   \item $w(orizzontale)=-j$
 \end{itemize}
+\begin{figure}
+  \centering
+  \includegraphics[scale = 1.3]{img/es41.pdf}
+  \caption{Rappresentazione grafica dei pesi degli archi. Si ricorda che nel
+    nodo finale, in rosso,
+    posso comunque avere solo valori $\geq 0$}
+  \label{fig:pes4}
+\end{figure}
 Dove gli archi diagonali rappresentano un match ed $i$ e $j$ sono gli indici che
 scorrono le due stringhe, ovvero rispettivamente sulle righe e sulle colonne.\\
-\textbf{Qualora si ottenga un valore negativo viene messo 0}.\\
+Si assume che i nodi abbiano valore $x\geq 0$ quindi
+\textbf{qualora si ottenga un valore negativo come risultato dopo
+  l'attraversamento dell'arco viene messo il valore 0}.\\
+Quando si ha un match quindi il nodo finale ha valore pari a uno più il valore
+del nodo sorgente dell'arco diagonale.\\
 Si ragiona quindi tenendo traccia del valore massimo raggiungo, tenendo traccia,
 per una maggior efficienza, anche delle coordinate. Una volta completata la
 griglia si avrà che il valore massimo corrisponde al nodo \textit{sink} del
@@ -430,6 +709,12 @@ corrisponde alla \textit{longest common substring}. \\
 Volendo si può scegliere di salvare in un vettore i valori massimi qualora
 coincidano, per ottenere eventuali più \textit{longest common substring} qualora
 ce ne siano.\\
+In altri termini si cerca il sottocammino più pesante.\\
+ipotizzando di non ``azzerare'' ogni volta in caso di mismatch otterrei comunque
+una griglia dover il nodo massimo mi permetterebbe di risalire la diagonale
+ritrovando la \textit{longest common substring} ma tale nodo non potrebbe avere
+come valore la lunghezza della stessa, in quanto non ricomincerei il conto da 0
+ogni volta che creo un nuovo cammino fatto di diagonali.
 Per ricostruire la \textit{longest common substring} si parte dal nodo
 \textit{sink}, come detto definito dal valore massimo calcolato. Si aggiunge il
 carattere corrispondente e si risale tutto il cammino diagonale, aggiungendo di
@@ -441,16 +726,19 @@ Vediamo quindi un esempio pratico. Siano date:
   \item AAACGCGCTTTTTCCCAT
   \item AAAGGGGCGCGCTTTTTAAA
 \end{itemize}
+\newpage
 Si costruisce quindi la griglia e si identifica il cammino diagonale più lungo:
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.62]{img/es4.pdf}
 \end{figure}
-Ricostruendo si ha che tale cammino identifica un massimo pari a 10 e si
+Ricostruendo si ha che tale cammino identifica un massimo pari a 10. Il
+sottocammino più pesante è quindi quello rappresentato in verde. Ipotizzando
+quindi di poter `risalire'' la dialogale si
 ricostruisce: 
 \begin{center}
   CGCGCTTTTT
 \end{center}
 che è appunto la \textit{longest common substring} delle due sequenze in input.
 \end{document}
-% LocalWords:  sottostringhe sottostringa pseudocodice lowercase
+% LocalWords:  sottostringhe sottostringa pseudocodice lowercase Hamming

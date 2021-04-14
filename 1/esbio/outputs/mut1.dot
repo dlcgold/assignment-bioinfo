@@ -1,13 +1,22 @@
 digraph sample{
-	"aat" -> "att" [ label = "t" ];
-	"att" -> "tta" [ label = "a" ];
-	"tta" -> "taa" [ label = "a" ];
-	"taa" -> "aaa" [ label = "a" ];
-	"aaa" -> "aag" [ label = "g" ];
-	"aag" -> "agt" [ label = "t" ];
-	"agt" -> "gtt" [ label = "t" ];
-	"gtt" -> "ttt" [ label = "t" ];
-	"ttt" -> "tta" [ label = "a" ];
-	"taa" -> "aac" [ label = "c" ];
-	"aac" -> "acc" [ label = "c" ];
+ nodesep="0.3";
+ranksep="0.3";
+ 	"tatct" -> "atctt" [ label = " t" ];
+	"atctt" -> "tcttg" [ label = " g" ];
+	"tcttg" -> "cttgc" [ label = " c" ];
+	"cttgc" -> "ttgca" [ label = " a" ];
+	"ttgca" -> "tgcat" [ label = " t" ];
+	"tgcat" -> "gcatt" [ label = " t" ];
+	"gcatt" -> "catta" [ label = " a" ];
+	"catta" -> "attac" [ label = " c" ];
+	"attac" -> "ttacc" [ label = " c" ];
+	"ttacc" -> "taccg" [ label = " g" ];
+	"taccg" -> "accgc" [ label = " c" ];
+	"accgc" -> "ccgcc" [ label = " c" ];
+	"ccgcc" -> "cgccc" [ label = " c" ];
+	"cgccc" -> "gcccc" [ label = " c" ];
+	"gcccc" -> "cccca" [ label = " a" ];
+	"cccca" -> "cccaa" [ label = " a" ];
+	"cccaa" -> "ccaat" [ label = " t" ];
+	"ccaat" -> "caatc" [ label = " c" ];
 }
