@@ -461,25 +461,28 @@ il \textit{kmer-set} che lo \textit{spettro}, mantenendo l'ordine, quindi il
 all'indice $i$ della sequenza. Quest'ultimo ragionamento è possibile solo grazie
 alle assunzioni fatte: \textit{kmer} non univoci non permetterebbero questo. Con
 $s[i,j]$ si intende la sottostringa di $s$ dall'indice $i$ all'indice $j$
-inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.
-\begin{algorithm}[H]
-  \begin{algorithmic}
+inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.\\
+\textit{Si noti che la funzione \texttt{getKmers}, così esplicitata,
+  consumerebbe la sequenza 
+  quindi la si ``copia'' in una sequenza temporanea $tmp$}.\\
+\begin{algorithm}
+  \small
+  \begin{algorithmic}[1]
     \Function{getKmers}{$seq$, $k$}
+    \State $tmp\gets seq$
     \State $kmers \gets [\,\,\,]$
-    \While {$length(seq)\geq k$}
-    \State $push(kmers, seq[0,k-1])$
-    \State $seq gets seq[1,]$
+    \While {$length(tmp)\tmp k$}
+    \State $push(kmers, tmp[0,k-1])$
+    \State $tmp \gets tmp[1,]$
     \EndWhile
     \State \textbf{return} $kmers$
     \EndFunction
   \end{algorithmic}
   \caption{Funzione di calcolo dei \textit{kmer}}
 \end{algorithm}
-\textit{Si noti che la funzione consuma la sequenza ma potrebbe essere
-  facilmente editato l'algoritmo per evitare questa cosa}.
-\newpage
-Passiamo ora allo pseudocodice principale.
-\begin{algorithm}[H]
+%\newpage
+%Passiamo ora allo pseudocodice principale.
+\begin{algorithm}
   \small
   \begin{algorithmic}[1]
     \Function{CheckMutation}{$seq1$, $seq2$}
@@ -516,9 +519,9 @@ Passiamo ora allo pseudocodice principale.
   \end{algorithmic}
   \caption{Algoritmo basato su \textit{kmer} per mutazioni}
 \end{algorithm}
-Dove con $i$ teniamo traccia dei \textit{kmer} da confrontare, eventualmente
-saltando i confronti superflui sopra descritti.
 \newpage
+Dove con $i$ teniamo traccia dei \textit{kmer} da confrontare, eventualmente
+saltando i confronti superflui sopra descritti.\\
 Vediamo quindi qualche esempio.
 \begin{esempio}
   Siano date in input:
@@ -692,7 +695,8 @@ Potenzialmente, in fase di creazione del \textit{grafo di De Bruijn}, potremmo
 tenere traccia degli archi che ``saltano'' le \textit{bubble}, come in figura
 \ref{fig:dbg2}, per poter simulare qualcosa di analogo alla versione 1
 dell'algoritmo, evitando di visitare archi inutili, saltando direttamente
-dall'inizio di una \textbf{bubble} alla sua fine, tramite una funzione adeguata.
+dall'inizio di una \textbf{bubble}, dopo aver aggiunto la mutazione, alla sua
+fine, tramite una funzione adeguata. 
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.33]{img/mut2.pdf}
