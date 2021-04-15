@@ -1,5 +1,0 @@
-digraph sample{
- nodesep="0.3";
-ranksep="0.3";
- 	"tatc" -> "atct" [ label = " t" ];
-}

@@ -1,5 +1,22 @@
 digraph sample{
  nodesep="0.3";
 ranksep="0.3";
- 	"tatc" -> "atct" [ label = " t" ];
+ 	"gatct" -> "atctt" [ label = " t" ];
+	"atctt" -> "tctta" [ label = " a" ];
+	"tctta" -> "cttac" [ label = " c" ];
+	"cttac" -> "ttaca" [ label = " a" ];
+	"ttaca" -> "tacat" [ label = " t" ];
+	"tacat" -> "acatt" [ label = " t" ];
+	"acatt" -> "catta" [ label = " a" ];
+	"catta" -> "attac" [ label = " c" ];
+	"attac" -> "ttacc" [ label = " c" ];
+	"ttacc" -> "taccg" [ label = " g" ];
+	"taccg" -> "accgt" [ label = " t" ];
+	"accgt" -> "ccgtc" [ label = " c" ];
+	"ccgtc" -> "cgtcc" [ label = " c" ];
+	"cgtcc" -> "gtccc" [ label = " c" ];
+	"gtccc" -> "tccca" [ label = " a" ];
+	"tccca" -> "cccaa" [ label = " a" ];
+	"cccaa" -> "ccaac" [ label = " c" ];
+	"ccaac" -> "caacc" [ label = " c" ];
 }

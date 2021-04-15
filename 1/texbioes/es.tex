@@ -687,7 +687,20 @@ algoritmo.
 \end{algorithm}
 \textit{Si noti che senza ulteriori assunzioni si perde esplicita referenza di
 quale base della mutazione appartiene alla sequenza di riferimento o a quella
-mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice.}
+mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice.}\\
+Potenzialmente, in fase di creazione del \textit{grafo di De Bruijn}, potremmo
+tenere traccia degli archi che ``saltano'' le \textit{bubble}, come in figura
+\ref{fig:dbg2}, per poter simulare qualcosa di analogo alla versione 1
+dell'algoritmo, evitando di visitare archi inutili, saltando direttamente
+dall'inizio di una \textbf{bubble} alla sua fine, tramite una funzione adeguata.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.33]{img/mut2.pdf}
+  \includegraphics[scale = 0.33]{img/mutns2.pdf}
+  \caption{Grafi di De Bruijn relativi con i ``salti'' delle \textbf{bubble},
+    rispettivamente, ai due esempi della ``versione 1''}
+  \label{fig:dbg2}
+\end{figure}
 \chapter{Esercizio 3}
 La \textbf{distanza di Hamming} tra due stringhe, che si assumono di uguale
 lunghezza, è 
