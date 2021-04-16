@@ -39,7 +39,7 @@ pub fn splitter(string: &String) -> Vec<String> {
     result
 }
 
-/// Funzione per la versione 1 del controllo delle mutazioni, versione basata su token.
+/// Funzione per la versione 1 del controllo delle mutazioni, versione basata su token dell'esercizio 1.
 /// # Examples
 /// ```
 /// let seq1 = "ATAGCTC".to_string();
@@ -94,7 +94,7 @@ fn check_gc(s1: &String, s2: &String) -> bool {
 }
 
 
-/// Funzione per la versione 2 del controllo delle mutazioni, versione basata su token.
+/// Funzione per la versione 2 del controllo delle mutazioni, versione basata su indici dell'esercizio 1.
 /// # Examples
 /// ```
 /// let seq1 = "ATAGCTC".to_string();
