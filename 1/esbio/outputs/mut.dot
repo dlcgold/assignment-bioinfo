@@ -1,0 +1,37 @@
+digraph sample{
+ nodesep="0.3";
+ranksep="0.3";
+ 	"tatc" -> "atct" [ label = " t" ];
+	"atct" -> "tctt" [ label = " t" ];
+	"tctt" -> "cttg" [ label = " g" ];
+	"cttg" -> "ttgc" [ label = " c" ];
+	"ttgc" -> "tgca" [ label = " a" ];
+	"tgca" -> "gcat" [ label = " t" ];
+	"gcat" -> "catt" [ label = " t" ];
+	"catt" -> "atta" [ label = " a" ];
+	"atta" -> "ttac" [ label = " c" ];
+	"ttac" -> "tacc" [ label = " c" ];
+	"tacc" -> "accg" [ label = " g" ];
+	"accg" -> "ccgc" [ label = " c" ];
+	"ccgc" -> "cgcc" [ label = " c" ];
+	"cgcc" -> "gccc" [ label = " c" ];
+	"gccc" -> "cccc" [ label = " c" ];
+	"cccc" -> "cccc" [ label = " c" ];
+	"cccc" -> "ccca" [ label = " a" ];
+	"ccca" -> "ccaa" [ label = " a" ];
+	"ccaa" -> "caac" [ label = " c" ];
+	"aatc" -> "atct" [ label = " t" ];
+	"ccaa" -> "caaa" [ label = " a" ];
+}];
+	"ttaca" -> "tacat" [ label = " t" ];
+	"tacat" -> "acatt" [ label = " t" ];
+	"acatt" -> "catta" [ label = " a" ];
+	"taccg" -> "accgt" [ label = " t" ];
+	"accgt" -> "ccgtc" [ label = " c" ];
+	"ccgtc" -> "cgtcc" [ label = " c" ];
+	"cgtcc" -> "gtccc" [ label = " c" ];
+	"gtccc" -> "tccca" [ label = " a" ];
+	"tccca" -> "cccaa" [ label = " a" ];
+	"cccaa" -> "ccaac" [ label = " c" ];
+	"ccaac" -> "caacc" [ label = " c" ];
+}

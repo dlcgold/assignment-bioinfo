@@ -471,7 +471,7 @@ inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.\\
     \Function{getKmers}{$seq$, $k$}
     \State $tmp\gets seq$
     \State $kmers \gets [\,\,\,]$
-    \While {$length(tmp)\tmp k$}
+    \While {$length(tmp)\geq k$}
     \State $push(kmers, tmp[0,k-1])$
     \State $tmp \gets tmp[1,]$
     \EndWhile
@@ -536,7 +536,7 @@ Vediamo quindi qualche esempio.
   \begin{enumerate}[start=0]
     \item confronto "atcttg" con "atctta". Ho un mismatch tra gli ultimi simboli
     ``g'' e ``a'', che sono all'indice 5 essendo noi al \textit{kmer} di indice
-    0 (si ha infatti $(6-1)+0=5$). Aggiungo quindi la mutazione \texttt{(g,a,5)}
+    0 (si ha infatti $5+0=5$). Aggiungo quindi la mutazione \texttt{(g,a,5)}
     e aggiorno l'indice al valore $i+6$, ovvero, in questo caso, $6$. Salto
     quindi tutti i confronti e riparto dal 6
     \item \sout{confronto "tcttgc" con "tcttac"}
@@ -552,7 +552,7 @@ Vediamo quindi qualche esempio.
     basta andando al confronto successivo
     \item confronto "taccgc" con "taccgt". Ho un mismatch tra gli ultimi simboli
     ``c'' e ``t'', che sono all'indice 14 essendo noi al \textit{kmer} di indice
-    9 (si ha infatti $(6-1)+9=14$). Aggiungo quindi la mutazione
+    9 (si ha infatti $5+9=14$). Aggiungo quindi la mutazione
     \texttt{(c,t,14)} 
     e aggiorno l'indice al valore $i+6$, ovvero, in questo caso, $15$. Salto
     quindi tutti i confronti e riparto dal 15
@@ -563,7 +563,7 @@ Vediamo quindi qualche esempio.
     \item \sout{confronto "ccccaa" con "tcccaa"}
     \item confronto "cccaat" con "cccaac". Ho un mismatch tra gli ultimi simboli
     ``t'' e ``c'', che sono all'indice 20 essendo noi al \textit{kmer} di indice
-    15 (si ha infatti $(6-1)+15=20$). Aggiungo quindi la mutazione
+    15 (si ha infatti $5+15=20$). Aggiungo quindi la mutazione
     \texttt{(t,c,20)} 
     e aggiorno l'indice al valore $i+6$, ovvero, in questo caso, $26$. Essendo
     l'indice maggiore stretto della cardinalità del \textit{kmer-set},
@@ -635,7 +635,7 @@ Facciamo le seguenti assunzioni per comodità:
     \item \texttt{label(n)}, che restituisce il \textit{(k-1)-mer} che
     etichetta il nodo $n$
     \item \texttt{outDegree(n)}, che restituisce il numero di archi uscenti dal
-    nodo $n$
+    nodo $n$. Se $n==null$ il metodo restituisce comunque 0
     \item \texttt{outLabel(n)}, che restituisce un vettore con le etichette
     degli archi uscenti dal nodo $n$
     \item \texttt{nextNodes(n)}, che fornisce un vettore di puntatori ai nodi
@@ -673,12 +673,13 @@ algoritmo.
     \While {$\top$}
     \If{$outDegree(curr) == 2$}
     \State $l\gets outLabel(curr)$
-    \State $push(muts, newMutation(label(l[0])[0], label(l[1])[0], i+5))$ 
-    \EndIf
-    \If{$outDegree(curr)\neq 0$}
-    \State $i\gets i+1$
+    \State $push(muts, newMutation(l[0],l[1], i+5))$
     \State $curr\gets nextNodes(curr)[0]$
     \Else
+    \State $i\gets i+1$
+    \State $curr\gets nextNodes(curr)[0]$
+    \EndIf
+    \If{$outdegree(curr) == 0$}
     \State \textbf{break}
     \EndIf
     \EndWhile
@@ -691,12 +692,74 @@ algoritmo.
 \textit{Si noti che senza ulteriori assunzioni si perde esplicita referenza di
 quale base della mutazione appartiene alla sequenza di riferimento o a quella
 mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice.}\\
+%aggiungere esempio
+\section{Versione 3}
 Potenzialmente, in fase di creazione del \textit{grafo di De Bruijn}, potremmo
 tenere traccia degli archi che ``saltano'' le \textit{bubble}, come in figura
 \ref{fig:dbg2}, per poter simulare qualcosa di analogo alla versione 1
 dell'algoritmo, evitando di visitare archi inutili, saltando direttamente
 dall'inizio di una \textbf{bubble}, dopo aver aggiunto la mutazione, alla sua
-fine, tramite una funzione adeguata. 
+fine, tramite una funzione adeguata. \\
+Ipotizziamo quindi che in fase di costruzione del \textit{grafo di De Bruijn}
+ogni qual volta si riconosca l'inizio di una \textbf{bubble} si provveda a
+creare, qualora la \textbf{bubble} si chiuda, a creare un arco, di tipologia
+diversa rispetto a quelli standard del grafo (anche solo banalmente indicandolo
+con 2 anziché 1 nell'ipotetica matrice di adiacenza), che punti alla fine della
+\textbf{bubble stessa}. Ipotizziamo quindi l'aggiunta un metodo, dato un
+nodo $n$ inizio di una \textbf{bubble} (quindi con \texttt{outDegree(n)==2}),
+ovvero 
+\texttt{toEndBubble(n)}. Tale metodo restituisce il nodo $n'$ di fine
+\textbf{bubble} (quello successivo con due archi entranti). Qualora
+\texttt{toEndBubble(n)} restituisca $null$ si ha che la \textbf{bubble} non
+viene chiusa prima della fine del grafo (indicando che non si ha una mutazione
+nelle ultime 6 basi).\\
+Il caso di prima base mutata rimane analogo alla versione precedente.\\
+Il salto alla fine della \textbf{bubble} comporta un comportamento pari a quello
+della prima versione dell'esercizio, comportando il medesimo aumento di indice
+per poter tener corretta traccia della posizione della mutazione.
+\newpage
+Possiamo quindi indicare il nuovo pseudocodice:
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}[1]
+    \Function{CheckMutation}{$seq1$, $seq2$}
+    \If{$length(seq1)\neq length(seq2)$}
+    \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \If{$length(seq1)==0$ \textbf{or} $length(seq2)==0$}
+    \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \State $muts \gets [\,\,\,]$
+    \State $i\gets 0$
+    \State $seq1\gets lowercase(seq1)$
+    \State $seq2\gets lowercase(seq2)$
+    \State $dbg\gets createDBG([seq1, seq2], 6)$
+    \State $s \gets startNodes(dbg)$
+    \If{$length(s) \neq 1$}
+    \State $push(muts, newMutation(label(s[0])[0], label(s[1])[0], 0))$ 
+    \State $i\gets i+1$
+    \EndIf
+    \State $curr\gets s[0]$
+    \While {$\top$}
+    \If{$outDegree(curr) \neq 2$}
+    \State $i\gets i+1$
+    \State $curr\gets nextNodes(curr)[0]$
+    \Else
+    \State $l\gets outLabel(curr)$
+    \State $push(muts, newMutation(l[0], l[1], i+5))$
+    \State $curr\gets toEndBubble(curr)$
+    \State $i\gets i+6$
+    \EndIf
+    \If{$outDegree(curr)==0$}
+    \State \textbf{break}
+    \EndIf
+    \EndWhile
+    \State \textbf{return} $(muts, \top)$
+    \EndFunction
+  \end{algorithmic}
+  \caption{Algoritmo basato su \textit{kmer}, \textit{grafo di De Bruijn} e
+  \textit{bubble} per mutazioni} 
+\end{algorithm}
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.33]{img/mut2.pdf}

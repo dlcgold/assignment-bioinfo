@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["esbio"] = [{"text":"impl Freeze for <a class=\"struct\" href=\"esbio/struct.Dbg.html\" title=\"struct esbio::Dbg\">Dbg</a>","synthetic":true,"types":["esbio::Dbg"]},{"text":"impl Freeze for <a class=\"struct\" href=\"esbio/struct.Mutation.html\" title=\"struct esbio::Mutation\">Mutation</a>","synthetic":true,"types":["esbio::Mutation"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

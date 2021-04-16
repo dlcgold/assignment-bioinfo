@@ -1,8 +1,7 @@
 digraph sample{
  nodesep="0.3";
 ranksep="0.3";
- 	"tatct" -> "atctt" [ label = " t" ];
-	"atctt" -> "tcttg" [ label = " g" ];
+ 	"atctt" -> "tcttg" [ label = " g" ];
 	"tcttg" -> "cttgc" [ label = " c" ];
 	"cttgc" -> "ttgca" [ label = " a" ];
 	"ttgca" -> "tgcat" [ label = " t" ];
@@ -19,4 +18,6 @@ ranksep="0.3";
 	"cccca" -> "cccaa" [ label = " a" ];
 	"cccaa" -> "ccaat" [ label = " t" ];
 	"ccaat" -> "caatc" [ label = " c" ];
+}
+	"ccaa" -> "caac" [ label = " c" ];
 }

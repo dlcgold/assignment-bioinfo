@@ -1,0 +1,11 @@
+digraph sample{
+ nodesep="0.3";
+ranksep="0.3";
+ 	"aaaaa" -> "aaaaa" [ label = " a" ];
+	"aaaaa" -> "aaaat" [ label = " t" ];
+	"aaaat" -> "aaata" [ label = " a" ];
+	"aaata" -> "aataa" [ label = " a" ];
+	"aataa" -> "ataaa" [ label = " a" ];
+	"ataaa" -> "taaaa" [ label = " a" ];
+	"taaaa" -> "aaaaa" [ label = " a" ];
+}
