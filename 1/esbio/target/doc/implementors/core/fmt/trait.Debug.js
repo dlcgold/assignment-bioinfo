@@ -1,3 +1,0 @@
-(function() {var implementors = {};
-implementors["esbio"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"esbio/es2/struct.Mutation.html\" title=\"struct esbio::es2::Mutation\">Mutation</a>","synthetic":false,"types":["esbio::es2::Mutation"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

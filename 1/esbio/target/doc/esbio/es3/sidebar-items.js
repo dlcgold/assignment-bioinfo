@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["check_manhattan","Funzione per il controllo della distanza di Hamming tramite problema di Manhattan dell’esercizio 3"]]});
