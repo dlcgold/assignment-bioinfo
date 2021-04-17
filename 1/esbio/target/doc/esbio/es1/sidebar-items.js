@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["check_virus","Funzione per la versione 1 del controllo delle mutazioni, versione basata su token dell’esercizio 1."],["check_virus2","Funzione per la versione 2 del controllo delle mutazioni, versione basata su indici dell’esercizio 1."],["splitter","Funzione per la creazione dei token."]]});

@@ -904,9 +904,30 @@ ricostruisce:
 che è appunto la \textit{longest common substring} delle due sequenze in input.
 \chapter{Link al codice}
 Durante lo svolgimento dell'assignment è stato elaborato anche il codice in
-\textit{Rust} per i vari esercizi, con i vari unit test correlati. L'unica
-eccezione è l'algoritmo di studio del \textit{grafo 
-di De Bruijn} del quale comunque è presente una bozza di codice per creare lo
-stesso e generare il relativo file \texttt{.dot}.
+\textit{Rust} per i vari esercizi, con i vari unit test correlati. In merito al
+codice relativo ai grafi di De Bruijn si specifica che alcuni metodi sono
+possibili solo grazie alle assunzioni fatte in merito all'esercizio 2.\\
+Il codice, insieme al $\TeX$  di questa relazione, è disponibile all'indirizzo:
+\url{https://github.com/dlcgold/es_bio}.\\
+Per eseguire i test:
+\begin{shaded}
+  \noindent
+  \texttt{> cd 1/esbio}\\
+  \texttt{> cargo test}
+\end{shaded}
+\noindent
+Per eseguire i test con alcune stampe:
+\begin{shaded}
+  \noindent
+  \texttt{> cd 1/esbio}\\
+  \texttt{> cargo test -- --nocapture}
+\end{shaded}
+\noindent
+Per visualizzare la piccola documentazione:
+\begin{shaded}
+  \noindent
+  \texttt{> cd 1/esbio}\\
+  \texttt{> cargo doc --open}
+\end{shaded}
 \end{document}
 % LocalWords:  sottostringhe sottostringa pseudocodice lowercase Hamming
