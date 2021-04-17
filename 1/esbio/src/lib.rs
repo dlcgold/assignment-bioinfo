@@ -559,8 +559,8 @@ pub mod es2 {
 
     /// Funzione per il controllo di mutazione dell'esercizio 2, versione 2.
     ///
-    /// Il codice è relativo allo studio iterativo del grafo di De Bruijn. Per l'esercizio
-    /// è utile avere k=6.
+    /// Il codice è relativo allo studio iterativo del grafo di De Bruijn, studio possibile solo
+    /// grazie alle assunzioni fatte. Per l'esercize è utile avere kmer con k=6.
     ///
     /// # Examples
     /// ```
@@ -625,8 +625,8 @@ pub mod es2 {
 
     /// Funzione per il controllo di mutazione dell'esercizio 2, versione 3.
     ///
-    /// Il codice è relativo allo studio iterativo del grafo di De Bruijn. Per l'esercizio
-    /// è utile avere k=6.
+    /// Il codice è relativo allo studio iterativo del grafo di De Bruijn con salto delle bubble.
+    /// Anche in questo caso lo studio è possibile solo grazie alle assunzioni fatte. Per l'esercizio è utile avere k=6.
     ///
     /// # Examples
     /// ```
