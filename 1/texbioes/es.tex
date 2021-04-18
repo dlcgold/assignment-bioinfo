@@ -126,11 +126,10 @@ Si ha quindi la prima parte dell'algoritmo, che effettua la divisione in
 \end{esempio}
 Si ha quindi lo pseudocodice:
 \begin{algorithm}[H]
-  \begin{algorithmic}
+  \begin{algorithmic}[1]
     \Function{Splitter}{$s$}
     \State $result \gets \left[\,\,\,\right]$
     \State $n\gets length(s)$
-    \State $last\_mismatch \gets 0$
     \If {$n==1$}
     \State $push(result, string(s[0]))$
     \State \textbf{return} $result$
@@ -138,15 +137,11 @@ Si ha quindi lo pseudocodice:
     \State $tmp \gets ""$
     \For {$i\gets 0$ \textbf{to} $n$}
     \If {$i > 0$ \textbf{and} $s[i-1]\neq s[i]$}
-    %\State $tmp \gets s[last\_mismatch, i-1]$
     \State $push(result, tmp)$
     \State $tmp \gets ""$
-    %\State $last\_mismatch \gets i$
     \EndIf
     \State $push(tmp, s[i])$
     \If {$i == (n-1)$}
-    % \State $tmp \gets s[last\_mismatch, n-1]$
-    % \State $push(result, tmp)$
     \State $push(result, tmp)$
     \EndIf
     \EndFor
@@ -155,6 +150,28 @@ Si ha quindi lo pseudocodice:
   \end{algorithmic}
   \caption{Algoritmo per lo split in ``token'' delle stringhe}
 \end{algorithm}
+\noindent
+Nel dettaglio:
+\begin{itemize}
+  \item alle righe 2-3 si inizializzano il vettore coi risultati e una variabile
+  contenente la lunghezza della stringa
+  \item alle righe 4-6 si controlla se la stringa è formata da un solo
+  carattere e in tal caso tale carattere sarà l'unico elemento del vettore dei
+  risultati. Dopo l'aggiunta l'esecuzione termina e viene restituito il vettore
+  \item alla riga 8 si inizializza una variabile d'appoggio che di volta in
+  volta tiene conto dei ``token''
+  \item alle righe 9-18 si identificano i vari ``token'' e li si aggiungono al
+  vettore con il risultato della funzione. Si itera su tutta la
+  stringa 
+  \item alle righe 10-13, a partire dal secondo carattere, qualora questo
+  sia diverso dal carattere seguente, si aggiunge il ``token'' e si azzera la
+  variabile temporanea
+  \item alla riga 14 si aggiunge il carattere letto alla attuale
+  stringa temporanea
+  \item alle righe 15-17 si verifica di essere arrivati alla fine
+  della stringa e in tal caso si aggiunge la stringa temporanea al vettore dei
+  risultati  
+\end{itemize}
 Una volta ottenuto il vettore dei ``token'' delle due sequenze in input basta
 confrontare i due vettori.\\
 Prima di vedere il confronto si specifica che:
@@ -191,7 +208,6 @@ contemporaneamente sull'elemento i-esimo dei due vettori e:
     $Y[i]$ 
   \end{itemize}
 \end{itemize}
-\newpage
 Si ha quindi il seguente pseudocodice dell'algoritmo, che ritorna $\top$ o
 $\bot$ a seconda che sia possibile che $seq2$ sia una versione infettata di
 $seq1$:
@@ -207,8 +223,8 @@ $seq1$:
     \If {$length(vecseq1)\neq length(vecseq2)$}
     \State \textbf{return} $\bot$
     \EndIf
-    \State $j \gets length(vecseq1)$
-    \For {$i\gets 0$ \textbf{to} $j$}
+    \State $n \gets length(vecseq1)$
+    \For {$i\gets 0$ \textbf{to} $n$}
     \If {$vseq1[i][0] \neq vseq2[i][0]$ \textbf{or} $\neg check$}
     \State \textbf{return} $\bot$
     \EndIf
@@ -225,6 +241,30 @@ $seq1$:
   \end{algorithmic}
   \caption{algoritmo di verifica dell'infezione}
 \end{algorithm}
+Nel dettaglio:
+\begin{itemize}
+  \item alle righe 2-4 si controlla che nessuna stringa sia $\varepsilon$. In
+  tal caso si ritorna $\bot$, come da assunzioni, concludendo l'iterazione
+  \item alle righe 5-7 si trasformano in lowercase le stringhe per comodità e si
+  inizializza la variabile booleana che conterrà il risultato dell'algoritmo. Si
+  noti che una volta diventata $\bot$ non potrebbe più tornare $\top$
+  \item alle righe 8-10 si verifica che i due vettori di ``token'' siano lunghi
+  uguale. In caso contrario sicuramente non si ha una mutazione secondo le
+  specifiche e si ritorna $\bot$, concludendo l'iterazione
+  \item alla riga 11 si salva la lunghezza del primo vettore di ``token'', che a
+  questo punto dell'esecuzione è pari a quella del secondo
+  \item alle righe 11-23 si itera sui due vettori di ``token''
+  contemporaneamente, confrontando di volta in volta i due elementi i-esimi
+  \item alle righe 13-15, qualora la variabile contente il risultato sia
+  $\bot$ o qualora i due ``token'' i-esimi inizino con un carattere diverso (e
+  quindi siano ``token'' di diversi caratteri), si ritorna $\bot$ concludendo
+  l'iterazione
+  \item alle righe 16-22, avendo a questo punto dell'iterazione che i due
+  ``token'' sono consistenti dal punto di vista del carattere, si verifica che
+  lo siano anche secondo le assunzioni di lunghezza, precedentemente illustrate.
+  Si aggiorna quindi la variabile contente il risultato a seconda del controllo,
+  che varia a seconda del carattere dei due ``token'' i-esimi
+\end{itemize}
 \begin{esempio}
   Qualche esempio:
   \begin{itemize}
@@ -237,7 +277,7 @@ $seq1$:
     \color{blue}AAA\color{green}T\color{blue}AAA\color{red}GGGG\color{yellow}CCCCC\color{green}TTTTTTT\color{yellow}CC
   \end{center}
   Avendo che tutti i vincoli sono rispettati.
-  \newpage
+  \\
   D'altro canto vediamo un esempio in cui non si può dire di avere una
   mutazione: 
   \begin{itemize}
@@ -305,6 +345,7 @@ visitata interamente, anche la seconda sia conclusa. In caso contrario si
 restituisce $\bot$.\\
 Si ha quindi il seguente pseudocodice.
 \begin{algorithm}[H]
+  \small
   \begin{algorithmic}[1]
     \Function{CheckInfection}{$seq1,seq2$}
     \State $m \gets length(seq1)$
@@ -319,7 +360,7 @@ Si ha quindi il seguente pseudocodice.
     \State $j \gets 0$
     \For {$i\gets 0$ \textbf{to} $m$}
     \State $co \gets co+1$
-    \If {$i==n-1$ \textbf{or} $seq1[i]\neq seq[i+1$}
+    \If {$i==n-1$ \textbf{or} $seq1[i]\neq seq[i+1]$}
     \If {$seq1[i]\neq seq2[j]$}
     \State \textbf{return} $\bot$
     \EndIf
@@ -351,6 +392,38 @@ Si ha quindi il seguente pseudocodice.
   \end{algorithmic}
   \caption{algoritmo di verifica dell'infezione, seconda versione}
 \end{algorithm}
+Nel dettaglio:
+\begin{itemize}
+  \item alle righe 2-6 si verificano che le lunghezze delle due sequenze siano
+  consistenti con le assunzioni del problema. Qualora anche solo una stringa sia
+  $\varepsilon$ si ritorna $\bot$, terminando l'esecuzione
+  \item alle righe 7-11 si pongono le stringhe in lowercase e si inizializzano
+  le variabili come precedentemente specificato
+  \item alle righe 12-39 si parte iterando sulla prima stringa, aggiornando il
+  rispettivo contatore
+  \item alle righe 14-38 si eseguono le varie operazioni sse si
+  ha un cambio di carattere nella prima sequenza o se si è arrivati alla fine
+  della stessa
+  \item alle righe 15-17, qualora si abbiano in confronto caratteri diversi per
+  le due sequenze si ritorna $\bot$, interrompendo l'esecuzione
+  \item alle righe 18-21 si itera sulla seconda stringa, aggiornando il
+  rispettivo contatore fino a che si hanno caratteri uguali
+  \item alle righe 22-23 si aumenta il contatore della seconda stringa in quanto
+  l'iterazione non conta il $j$-esimo carattere prima di un carattere diverso e
+  si aumenta l'indice di 1 in modo che punti al $j+1$-esimo carattere, quello
+  diverso dal $j$-esimo 
+  \item alle righe 24-32 vengono effettuati i controlli tramite i contatori
+  secondo le specifiche date per le mutazioni, aggiornando la variabile
+  booleana (operazione in se superflua ma comoda dal punto di vista della
+  chiarezza dell'algoritmo). Se i controlli non sono superati si ritorna $\bot$,
+  interrompendo l'esecuzione 
+  \item alle righe 33-34 si azzerano i due contatori, in modo da poter iniziare
+  un nuovo controllo con le nuove sequenze di caratteri
+  \item alle righe 35-37 si verifica che, qualora l'indice che itera sulla prima
+  stringa sia arrivato a puntare alla fine della stessa, l'indice della seconda
+  deve fare lo stesso (ricordando che, a causa del $j\gets j+1$ in riga 23, la
+  cosa è rappresentata da $j\neq n$ e non $j\neq n-1$)
+\end{itemize}
 Dal punto di vista pratico questo secondo algoritmo evita la fase di
 preprocessing vista nel primo algoritmo con la funzione
 \texttt{Splitter}. Anziché avere a priori le sottostringhe di cui confrontare le
@@ -375,8 +448,9 @@ Si fanno le seguenti assunzioni:
   mutate 
   \item si assume che la prima base della sequenza può mutare
   \item si assume che le sequenze siano tali per cui il loro \textit{kmer-set}
-  coincida con il loro \textit{spettro}. In altri termini le sequenze sono tali
-  per cui si hanno solo \textit{kmer} univoci
+  coincida con il loro \textit{spettro} per $k=6$ (scelta approfondita dopo). In
+  altri termini le sequenze 
+  sono tali per cui si hanno solo \textit{kmer} univoci
   \item si assume, per pura semplicità, di avere in input sequenze lunghe almeno
   quanto un singolo \textit{kmer}
 \end{itemize}
@@ -463,10 +537,18 @@ alle assunzioni fatte: \textit{kmer} non univoci non permetterebbero questo. Con
 $s[i,j]$ si intende la sottostringa di $s$ dall'indice $i$ all'indice $j$
 inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.\\
 \textit{Si noti che la funzione \texttt{getKmers}, così esplicitata,
-  consumerebbe la sequenza 
-  quindi la si ``copia'' in una sequenza temporanea $tmp$}.\\
-\begin{algorithm}
-  \small
+  consumerebbe la sequenza e quindi la si ``copia'' in una sequenza temporanea
+  $tmp$. Questo è
+  superfluo in termini di pseudocodice ma mi è sembrato giusto segnalare la
+  cosa. Nel codice Rust il problema è risolto passando un \texttt{clone()} della
+  sequenza. Si può pensare, volendo, ad un algoritmo che non consumi la stringa
+  e che non richieda una copia della stessa}.
+\newpage
+\noindent
+Passiamo quindi allo pseudocodice, in primis della funzione che calcola lo
+\textit{spettro}, che ricordiamo, per le assunzioni fatte, porterà ad uno
+\textit{spettro} uguale al \textit{kmer-set}. 
+\begin{algorithm}[H]
   \begin{algorithmic}[1]
     \Function{getKmers}{$seq$, $k$}
     \State $tmp\gets seq$
@@ -480,10 +562,23 @@ inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.\\
   \end{algorithmic}
   \caption{Funzione di calcolo dei \textit{kmer}}
 \end{algorithm}
-%\newpage
-%Passiamo ora allo pseudocodice principale.
-\begin{algorithm}
-  \small
+\noindent
+Nel dettaglio:
+\begin{itemize}
+  \item alla riga 2 si crea una variabile temporanea contenente la sequenza in
+  input di modo che quest'ultima non venga consumata
+  \item alla riga 3 si inizializza uno \textit{spettro}, visto come vettore di
+  stringhe, vuoto
+  \item alle righe 4-7 si popola lo \textit{spettro}. Si aggiunge al vettore il
+  prefisso lungo $k$, quindi la sottostringa compresa tra 0 e l'indice $k-1$,
+  incluso. Si aggiorna quindi la stringa temporanea con il suffisso di indice 1
+  della stringa stessa. Il ciclo termina quando la stringa temporanea è di
+  lunghezza inferiore al $k$ richiesto
+\end{itemize}
+\newpage
+\noindent
+Passiamo ora allo pseudocodice principale.
+\begin{algorithm}[H]
   \begin{algorithmic}[1]
     \Function{CheckMutation}{$seq1$, $seq2$}
     \If{$length(seq1)\neq length(seq2)$}
@@ -497,14 +592,14 @@ inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.\\
     \State $n\gets length(seq1)$
     \State $seq1\gets lowercase(seq1)$
     \State $seq2\gets lowercase(seq2)$
-    \If{$seq1[0]\neq seq2[0]$}
-    \State $push(muts, newMutation(seq1[0], seq2[0], 0))$
-    \State $i \gets index+1$
-    \EndIf
     \State $kmers1\gets getKmers(seq1,6)$
     \State $kmers2\gets getKmers(seq2,6)$
     \If{$length(kmers1)\neq n-5$ \textbf{or} $length(kmers2)\neq n-5$}
     \State \textbf{return} $([\,\,\,],\bot)$
+    \EndIf
+    \If{$kmers1[0][0]\neq kmers2[0][0]$}
+    \State $push(muts, newMutation(kmers1[0][0], kmers2[0][0], 0))$
+    \State $i \gets index+1$
     \EndIf
     \While {$i < length(kmers1)$}
     \If{$kmers1[i][5]\neq kmers2[i][5]$}
@@ -520,8 +615,56 @@ inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.\\
   \caption{Algoritmo basato su \textit{kmer} per mutazioni}
 \end{algorithm}
 \newpage
+\noindent
 Dove con $i$ teniamo traccia dei \textit{kmer} da confrontare, eventualmente
 saltando i confronti superflui sopra descritti.\\
+Nel dettaglio quindi:
+\begin{itemize}
+  \item alle righe 2-4, qualora le stringhe siano di diversa lunghezza, come da
+  assunzioni, si restituisce la coppia formata dal vettore di mutazione vuoto e
+  $\bot$, quest'ultimo per segnalare che il confronto violava le assunzioni
+  \item alle righe 5-7, qualora anche solo una delle due stringhe sia
+  $\varepsilon$, si restituisce la coppia formata dal vettore di mutazione vuoto
+  e $\bot$, quest'ultimo per segnalare che il confronto violava le assunzioni
+  \item alle righe 8-10 si inizializza il vettore delle mutazioni, l'indice che
+  tiene conto delle posizioni delle stesse e una variabile che tiene conto della
+  lunghezza della prima stringa, che a questo punto dell'esecuzione abbiamo
+  garanzia essere pari a quella della seconda
+  \item alle righe 11-12, per praticità, si riducono le due sequenze al
+  lowercase
+  \item alle righe 13-14 si calcolano i due \textit{spettri}, che, per il metodo
+  di calcolo presentano \textit{kmer} ordinati. SI usa $k=6$ come descritto
+  precedentemente 
+  rispetto alla sequenza di provenienza. In altri termini il primo \textit{kmer}
+  della prima sequenza è quello che inizia all'indice 0, il secondo all'indice 1
+  etc$\ldots$, permettendo così il confronto diretto tra i due \textit{spettri}
+  \item alle righe 15-17 si verifica che effettivamente i due \textit{spettri}
+  coincidano coi rispettivi \textit{kmer-set}, come spiegato precedentemente. In
+  caso contrario si restituisce 
+  la coppia formata dal vettore di mutazione vuoto e $\bot$, quest'ultimo per
+  segnalare che il confronto violava le assunzioni 
+  \item alle righe 18-21 si risolve l'assunzione per la quale la prima base può
+  subire una mutazione. Si verificano quindi i primi due caratteri dei primi due
+  \textit{kmer} degli spettri delle due sequenze e, in caso di diversità, si
+  aggiunge la mutazione al vettore delle 
+  mutazioni. Si incrementa quindi l'indice che tiene traccia della posizione
+  delle mutazioni
+  \item alle righe 22-29 si itera, sfruttando l'indice usato per tenere traccia
+  delle mutazioni, per ogni coppia di \textit{kmer} i-esimi a
+  partire dai due \textit{spettri}
+  \item alle righe 23-28 si aggiunge la mutazione qualora i due \textit{kmer}
+  i-esimi presentino l'ultimo carattere diverso. Si aggiunge quindi la mutazione
+  tenendo conto dell'indice che rappresenta la mutazione (incrementato di 5 per
+  rappresentare la corretta posizione della mutazione sulle stringhe). Si
+  incrementa quindi di 6 tale indice 
+  per evitare controlli su coppie di \textit{kmer} inutili. Qualora invece non
+  si abbia una mutazione si incrementa semplicemente di 1 l'indice
+  \item alla riga 30 si restituisce la coppia formata dal vettore di
+  mutazione e $\top$. Si segnala che il vettore potrebbe essere comunque vuoto
+  ma il booleano posto a $\top$ segnala che le assunzioni, perlomeno quelle che
+  è possibile controllare, sono state verificate e che quindi si hanno
+  effettivamente due stringhe valide identiche
+\end{itemize}
 Vediamo quindi qualche esempio.
 \begin{esempio}
   Siano date in input:
@@ -607,7 +750,7 @@ Qualora si abbia una mutazione nella prima base allora si avranno due
 nodi privi di archi entranti che puntano però allo stesso nodo. Si procede
 quindi aggiungendo la prima base come mutazione e proseguendo con il
 ragionamento visto sopra a partire da questo nodo a cui puntano.\\
-I due grafi sono visualizzabili in figura \ref{fig:dbg}.
+I due grafi sono visualizzabili in figura \ref{fig:dbg}.\\
 \begin{figure}
   \centering
   \includegraphics[scale = 0.38]{img/mut.pdf}
@@ -616,7 +759,7 @@ I due grafi sono visualizzabili in figura \ref{fig:dbg}.
     ``versione 1''}
   \label{fig:dbg}
 \end{figure}
-Facciamo le seguenti assunzioni per comodità:
+Facciamo le seguenti assunzioni, a livello di pseudocodice, per comodità:
 \begin{itemize}
   \item la funzione \texttt{createDBG(v, k)} prende in input un vettore $v$ di
   stringhe e un intero $k$ e restituisce un oggetto rappresentante il
@@ -660,9 +803,9 @@ algoritmo.
     \State \textbf{return} $([\,\,\,],\bot)$
     \EndIf
     \State $muts \gets [\,\,\,]$
-    \State $i\gets 0$
     \State $seq1\gets lowercase(seq1)$
     \State $seq2\gets lowercase(seq2)$
+    \State $i\gets 0$
     \State $dbg\gets createDBG([seq1, seq2], 6)$
     \State $s \gets startNodes(dbg)$
     \If{$length(s) \neq 1$}
@@ -674,14 +817,12 @@ algoritmo.
     \If{$outDegree(curr) == 2$}
     \State $l\gets outLabel(curr)$
     \State $push(muts, newMutation(l[0],l[1], i+5))$
-    \State $curr\gets nextNodes(curr)[0]$
-    \Else
-    \State $i\gets i+1$
-    \State $curr\gets nextNodes(curr)[0]$
     \EndIf
     \If{$outdegree(curr) == 0$}
     \State \textbf{break}
     \EndIf
+    \State $i\gets i+1$
+    \State $curr\gets nextNodes(curr)[0]$
     \EndWhile
     \State \textbf{return} $(muts, \top)$
     \EndFunction
@@ -689,9 +830,40 @@ algoritmo.
   \caption{Algoritmo basato su \textit{kmer} e \textit{grafo di De Bruijn} per
   mutazioni} 
 \end{algorithm}
+Nel dettaglio, tralasciando quanto uguale alla prima versione:
+\begin{itemize}
+  \item alla riga 11 si inizializza un indice che tiene conto della posizione
+  della mutazione, tramite il numero di nodi del \textit{grafo di De Bruijn}
+  visitati 
+  \item alla riga 12 si crea il \textit{grafo di De Bruijn} a partire dalla
+  coppia di stringhe
+  \item alla riga 13 si estrae il vettore di \textit{nodi source}, senza archi
+  entranti
+  \item alle righe 14-17 si risolve l'assunzione per la quale la prima base può
+  subire una mutazione. Qualora non si abbia un solo \textit{nodo source} si
+  aggiunge la mutazione che corrisponde ai primi simboli delle etichette di tali
+  nodi, che possono essere solo due (non essendo uno) per le assunzioni fatte.
+  Si incrementa quindi l'indice 
+  \item alla riga 18 si sceglie il primo \textit{nodo source} (unico in assenza
+  di mutazione in prima base) come nodo da cui far partire l'iterazione
+  \item alle righe 19-31 si studia il grafo
+  \item alle righe 20-27 qualora un nodo abbia due archi uscenti, essendo quindi
+  in un nodo che inizia una \textbf{bubble}, si aggiunge la
+  mutazione corrispondente alle etichette degli archi che portano a tali
+  nodi. L'indice di tale mutazione è ottenuto tenendo conto dell'indice
+  incrementato di 5, per lo stesso ragionamento della prima versione
+  dell'esercizio
+  \item alle righe 24-26 si interrompe lo studio del grafo qualora si sia giunti
+  ad un \textit{nodo sink}, senza archi uscenti. A questo è possibile solo
+  grazie alle assunzioni fatte 
+  \item alle righe 27-28 si incrementa l'indice e ci si sposta al nodo
+  successivo. Qualora fossimo in un nodo che inizia una \textbf{bubble} si
+  sceglie di seguire uno dei due cammini, nel dettaglio il primo
+\end{itemize}
 \textit{Si noti che senza ulteriori assunzioni si perde esplicita referenza di
 quale base della mutazione appartiene alla sequenza di riferimento o a quella
-mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice.}\\
+mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice
+della mutazione.}\\
 %aggiungere esempio
 \section{Versione 3}
 Potenzialmente, in fase di creazione del \textit{grafo di De Bruijn}, potremmo
@@ -716,9 +888,15 @@ nelle ultime 6 basi).\\
 Il caso di prima base mutata rimane analogo alla versione precedente.\\
 Il salto alla fine della \textbf{bubble} comporta un comportamento pari a quello
 della prima versione dell'esercizio, comportando il medesimo aumento di indice
-per poter tener corretta traccia della posizione della mutazione.
-\newpage
-Possiamo quindi indicare il nuovo pseudocodice:
+per poter tener corretta traccia della posizione della mutazione.\\
+Possiamo quindi indicare il nuovo pseudocodice dove si vedrà che  la differenza
+rispetto alla versione 2 è che, qualora si sia in un 
+nodo che inizia una \textbf{bubble}, il nodo seguente, dopo l'aggiunta della
+mutazione, non viene scelto come il primo di uno dei due cammini ma, alla riga
+26, come il nodo che termina la \textbf{bubble}. L'indice viene incrementato in
+riga 27 di conseguenza. In generale si ha quindi un controllo che permette di
+capire se si è in un nodo che inizia una \textbf{bubble} o in uno con un solo
+nodo successivo e in tal caso si procede normalmente.
 \begin{algorithm}[H]
   \small
   \begin{algorithmic}[1]
@@ -760,6 +938,7 @@ Possiamo quindi indicare il nuovo pseudocodice:
   \caption{Algoritmo basato su \textit{kmer}, \textit{grafo di De Bruijn} e
   \textit{bubble} per mutazioni} 
 \end{algorithm}
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.33]{img/mut2.pdf}
@@ -907,7 +1086,7 @@ Durante lo svolgimento dell'assignment è stato elaborato anche il codice in
 \textit{Rust} per i vari esercizi, con i vari unit test correlati. In merito al
 codice relativo ai grafi di De Bruijn si specifica che alcuni metodi sono
 possibili solo grazie alle assunzioni fatte in merito all'esercizio 2.\\
-Il codice, insieme al $\TeX$  di questa relazione, è disponibile all'indirizzo:
+Il codice, insieme al \TeX  di questa relazione, è disponibile all'indirizzo:
 \url{https://github.com/dlcgold/es_bio}.\\
 Per eseguire i test:
 \begin{shaded}

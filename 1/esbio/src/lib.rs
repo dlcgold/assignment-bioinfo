@@ -181,8 +181,24 @@ pub mod es2 {
         get_kmers(&mut vec![s], k)
     }
 
+    /// Funzione per la creazione dello spettro a partire da un vettore di stringhe.
+    ///
+    /// Le sequenze vengono consumate quindi conviene passare cloni.
+    /// # Examples
+    /// ```
+    /// let k = 6;
+    /// let seq = "atcttgcat".to_string();
+    /// let kmers = vec!["atcttg", "tcttgc", "cttgca", "ttgcat"];
+    /// assert_eq!(kmers, esbio::es2::get_kmers(&mut vec![seq.clone()], k));
+    /// ```
+    /// ```
+    /// let seq1 = "atcttga".to_string();
+    /// let seq2 = "atcttgc".to_string();
+    /// let kmers = vec!["atcttg", "tcttga", "atcttg", "tcttgc"];
+    /// assert_eq!(kmers, esbio::es2::get_kmers(&mut vec![seq1.clone(), seq2.clone()], 6));
+    /// ```
     #[allow(dead_code)]
-    fn get_kmers(reads: &mut Vec<String>, k: i32) -> Vec<String> {
+    pub fn get_kmers(reads: &mut Vec<String>, k: i32) -> Vec<String> {
         let mut v: Vec<String> = Vec::new();
         for s in reads {
             while s.len() >= k as usize {
@@ -533,9 +549,9 @@ pub mod es2 {
             return (Vec::new(), false);
         }
         let mut curr_ind: usize = 0;
-        if seq1.chars().next().unwrap() != seq2.chars().next().unwrap() {
-            mutations.push(Mutation::new(seq1.chars().next().unwrap(),
-                                         seq2.chars().next().unwrap(),
+        if kmer1[0].chars().next().unwrap() != kmer2[0].chars().next().unwrap() {
+            mutations.push(Mutation::new(kmer1[0].chars().next().unwrap(),
+                                         kmer2[0].chars().next().unwrap(),
                                          0));
             curr_ind += 1;
         }
@@ -699,6 +715,7 @@ pub mod es3 {
 
     /// Funzione per il controllo della distanza di Hamming tramite problema di Manhattan dell'esercizio 3
     ///
+    /// Si usa per comodità la griglia vista come matrice
     /// In input:
     /// - prima sequenza
     /// - seconda sequenza
@@ -757,6 +774,7 @@ pub mod es4 {
 
     /// Funzione per il calcolo della longest common substring tra due stringhe dell'esercizio 4
     ///
+    /// Si usa per comodità la griglia vista come matrice
     /// # Examples
     /// ```
     /// let seq1 = "AAACGCGCTTTTTCCC".to_string();
@@ -1008,7 +1026,7 @@ mod tests {
     fn test_es2_3() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations(&seq1, &seq2, 5);
+        let muts = check_mutations(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1018,7 +1036,7 @@ mod tests {
     fn test_es2_4() {
         let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
         let seq2 = "".to_string();
-        let muts = check_mutations(&seq1, &seq2, 5);
+        let muts = check_mutations(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1028,7 +1046,7 @@ mod tests {
     fn test_es2_5() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let muts = check_mutations(&seq1, &seq2, 5);
+        let muts = check_mutations(&seq1, &seq2, 6);
         assert_eq!(muts.1, true);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1038,7 +1056,7 @@ mod tests {
     fn test_es2_6() {
         let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
         let seq2 = "AATCTTGCATTACCGCCCCCAAA".to_string();
-        let muts = check_mutations(&seq1, &seq2, 5);
+        let muts = check_mutations(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.1, true);
         assert_eq!(muts.0.len(), 2);
@@ -1074,7 +1092,7 @@ mod tests {
     fn test_es21_3() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 5);
+        let muts = check_mutations2(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1084,7 +1102,7 @@ mod tests {
     fn test_es21_4() {
         let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
         let seq2 = "".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 5);
+        let muts = check_mutations2(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1094,7 +1112,7 @@ mod tests {
     fn test_es21_5() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 5);
+        let muts = check_mutations2(&seq1, &seq2, 6);
         assert_eq!(muts.1, true);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1104,7 +1122,7 @@ mod tests {
     fn test_es21_6() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "AATCTTGCATTACCGCCCCAAA".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 5);
+        let muts = check_mutations2(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.1, true);
         assert_eq!(muts.0.len(), 2);
@@ -1141,7 +1159,7 @@ mod tests {
     fn test_es22_3() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 5);
+        let muts = check_mutations3(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1151,7 +1169,7 @@ mod tests {
     fn test_es22_4() {
         let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
         let seq2 = "".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 5);
+        let muts = check_mutations3(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1161,7 +1179,7 @@ mod tests {
     fn test_es22_5() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 5);
+        let muts = check_mutations3(&seq1, &seq2, 6);
         assert_eq!(muts.1, true);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1171,7 +1189,7 @@ mod tests {
     fn test_es22_6() {
         let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
         let seq2 = "AATCTTGCATTACCGCCCCAAA".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 5);
+        let muts = check_mutations3(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.1, true);
         assert_eq!(muts.0.len(), 2);
