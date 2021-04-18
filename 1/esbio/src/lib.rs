@@ -5,13 +5,13 @@
 /// Primo esercizio
 pub mod es1 {
     /// Funzione per la creazione dei token.
-/// # Examples
-/// ```
-/// let seq = "aagggcccccttttcc".to_string();
-/// let split = esbio::es1::splitter(&seq);
-/// let check = vec!["aa", "ggg", "ccccc", "tttt","cc"];
-/// assert_eq!(check, split);
-/// ```
+    /// # Examples
+    /// ```
+    /// let seq = "aagggcccccttttcc".to_string();
+    /// let split = esbio::es1::splitter(&seq);
+    /// let check = vec!["aa", "ggg", "ccccc", "tttt","cc"];
+    /// assert_eq!(check, split);
+    /// ```
     #[allow(dead_code)]
     pub fn splitter(string: &String) -> Vec<String> {
         let chars: Vec<char> = string.chars().collect();
@@ -35,17 +35,17 @@ pub mod es1 {
     }
 
     /// Funzione per la versione 1 del controllo delle mutazioni, versione basata su token dell'esercizio 1.
-/// # Examples
-/// ```
-/// let seq1 = "ATAGCTC".to_string();
-/// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
-/// assert!(esbio::es1::check_virus(&seq1, &seq2));
-/// ```
-/// ```
-/// let seq1 = "TTAGCTC".to_string();
-/// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
-/// assert!(!esbio::es1::check_virus(&seq1, &seq2));
-/// ```
+    /// # Examples
+    /// ```
+    /// let seq1 = "ATAGCTC".to_string();
+    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+    /// assert!(esbio::es1::check_virus(&seq1, &seq2));
+    /// ```
+    /// ```
+    /// let seq1 = "TTAGCTC".to_string();
+    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+    /// assert!(!esbio::es1::check_virus(&seq1, &seq2));
+    /// ```
     #[allow(dead_code)]
     pub fn check_virus(s1: &String, s2: &String) -> bool {
         let seq1 = s1.to_lowercase();
@@ -195,7 +195,7 @@ pub mod es2 {
 
     /// Funzione per la creazione del kmer-set a partire da un vettore di stringhe.
     ///
-    /// Le sequenze vengono consumate quindi non conviene passare reference alle stesse ma cloni.
+    /// Le sequenze vengono consumate quindi conviene passare cloni.
     /// # Examples
     /// ```
     /// let k = 6;
@@ -422,40 +422,35 @@ pub mod es2 {
 
         /// Metodo per la stampa del grafo in formato DOT
         ///
-        /// `output` è l'argomento contentente il path
-        pub fn to_dot(&self, output: String) {
+        /// `output` è l'argomento contentente il path, `bubble` se si vuole la stampa degli archi
+        /// che chiudono le bolle
+        pub fn to_dot(&self, output: String, bubble: bool) {
             let mut fileout = File::create(output).expect("error");
             fileout
                 //.write("digraph sample{\n rankdir=\"LR\";\n".as_bytes())
                 .write("digraph sample{\n nodesep=\"0.3\";\nranksep=\"0.3\";\n ".as_bytes())
                 .expect("error");
             for edge in &self.edges {
-                if edge.0.len() <= 6 {
-                    fileout
-                        .write(
-                            format!(
-                                "\t\"{}\" -> \"{}\" [ label = \" {}\" ];\n",
-                                edge.0,
-                                edge.1,
-                                edge.1.chars().last().unwrap()
-                            )
-                                .as_bytes(),
+                fileout
+                    .write(
+                        format!(
+                            "\t\"{}\" -> \"{}\" [ label = \" {}\" ];\n",
+                            edge.0,
+                            edge.1,
+                            edge.1.chars().last().unwrap()
                         )
-                        .expect("error");
-                } else {
-                    let mut start = edge.0[0..3].to_string();
-                    start.push_str(&"...".to_string());
-                    start.push_str(&edge.0[edge.0.len() - 3..]);
-                    let mut end = edge.1[0..3].to_string();
-                    end.push_str(&"...".to_string());
-                    end.push_str(&edge.1[edge.1.len() - 3..]);
+                            .as_bytes(),
+                    )
+                    .expect("error");
+            }
+            if bubble {
+                for edge in &self.bubble {
                     fileout
                         .write(
                             format!(
-                                "\t\"{}\" -> \"{}\" [ label = \" {}\"];\n",
-                                start,
-                                end,
-                                edge.1.chars().last().unwrap()
+                                "\t\"{}\" -> \"{}\" [ style = \" dashed\" ];\n",
+                                edge.0,
+                                edge.1
                             )
                                 .as_bytes(),
                         )
@@ -761,16 +756,15 @@ pub mod es4 {
     use std::cmp;
 
     /// Funzione per il calcolo della longest common substring tra due stringhe dell'esercizio 4
-        ///
-        /// # Examples
-        /// ```
-        /// let seq1 = "AAACGCGCTTTTTCCC".to_string();
-        /// let seq2 = "AAAGGGGCGCGCTTTTTAAA".to_string();
-        /// assert_eq!("CGCGCTTTTT", esbio::es4::lcs(&seq1, &seq2));
-        /// ```
+    ///
+    /// # Examples
+    /// ```
+    /// let seq1 = "AAACGCGCTTTTTCCC".to_string();
+    /// let seq2 = "AAAGGGGCGCGCTTTTTAAA".to_string();
+    /// assert_eq!("CGCGCTTTTT", esbio::es4::lcs(&seq1, &seq2));
+    /// ```
     #[allow(dead_code)]
     pub fn lcs(seq1: &String, seq2: &String) -> String {
-
         let m = seq1.len();
         let n = seq2.len();
         let mut mm = vec![vec![0; n + 1]; m + 1];
@@ -857,6 +851,7 @@ mod tests {
     use crate::es3::check_manhattan;
 
     use crate::es4::lcs;
+
     #[test]
     fn test_es1_1() {
         let seq1 = "ATAGCTC".to_string();
