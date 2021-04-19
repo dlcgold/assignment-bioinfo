@@ -7,13 +7,13 @@ pub mod es1 {
     /// Funzione per la creazione dei token.
     /// # Examples
     /// ```
-    /// let seq = "aagggcccccttttcc".to_string();
+    /// let seq = "aagggcccccttttcc";
     /// let split = esbio::es1::splitter(&seq);
     /// let check = vec!["aa", "ggg", "ccccc", "tttt","cc"];
     /// assert_eq!(check, split);
     /// ```
     #[allow(dead_code)]
-    pub fn splitter(string: &String) -> Vec<String> {
+    pub fn splitter(string: &str) -> Vec<String> {
         let chars: Vec<char> = string.chars().collect();
         let mut result = Vec::new();
         let mut tmp = "".to_string();
@@ -37,22 +37,22 @@ pub mod es1 {
     /// Funzione per la versione 1 del controllo delle mutazioni, versione basata su token dell'esercizio 1.
     /// # Examples
     /// ```
-    /// let seq1 = "ATAGCTC".to_string();
-    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+    /// let seq1 = "ATAGCTC";
+    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
     /// assert!(esbio::es1::check_virus(&seq1, &seq2));
     /// ```
     /// ```
-    /// let seq1 = "TTAGCTC".to_string();
-    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+    /// let seq1 = "TTAGCTC";
+    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
     /// assert!(!esbio::es1::check_virus(&seq1, &seq2));
     /// ```
     ///  ```
-    /// let seq1 = "ATAGCTC".to_string();
-    /// let seq2 = "ATAGCTC".to_string();
+    /// let seq1 = "ATAGCTC";
+    /// let seq2 = "ATAGCTC";
     /// assert!(esbio::es1::check_virus(&seq1, &seq2));
     /// ```
     #[allow(dead_code)]
-    pub fn check_virus(s1: &String, s2: &String) -> bool {
+    pub fn check_virus(s1: &str, s2: &str) -> bool {
         let seq1 = s1.to_lowercase();
         let seq2 = s2.to_lowercase();
         let mut check = true;
@@ -79,17 +79,17 @@ pub mod es1 {
     }
 
     #[allow(dead_code)]
-    fn check_a(s1: &String, s2: &String) -> bool {
+    fn check_a(s1: &str, s2: &str) -> bool {
         s2.len() <= 5 * s1.len()
     }
 
     #[allow(dead_code)]
-    fn check_t(s1: &String, s2: &String) -> bool {
+    fn check_t(s1: &str, s2: &str) -> bool {
         s2.len() <= 10 * s1.len()
     }
 
     #[allow(dead_code)]
-    fn check_gc(s1: &String, s2: &String) -> bool {
+    fn check_gc(s1: &str, s2: &str) -> bool {
         s2.len() >= s1.len()
     }
 
@@ -97,22 +97,22 @@ pub mod es1 {
     /// Funzione per la versione 2 del controllo delle mutazioni, versione basata su indici dell'esercizio 1.
     /// # Examples
     /// ```
-    /// let seq1 = "ATAGCTC".to_string();
-    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+    /// let seq1 = "ATAGCTC";
+    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
     /// assert!(esbio::es1::check_virus2(&seq1, &seq2));
     /// ```
     /// ```
-    /// let seq1 = "TTAGCTC".to_string();
-    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+    /// let seq1 = "TTAGCTC";
+    /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
     /// assert!(!esbio::es1::check_virus2(&seq1, &seq2));
     /// ```
     ///  ```
-    /// let seq1 = "ATAGCTC".to_string();
-    /// let seq2 = "ATAGCTC".to_string();
+    /// let seq1 = "ATAGCTC";
+    /// let seq2 = "ATAGCTC";
     /// assert!(esbio::es1::check_virus2(&seq1, &seq2));
     /// ```
     #[allow(dead_code)]
-    pub fn check_virus2(s1: &String, s2: &String) -> bool {
+    pub fn check_virus2(s1: &str, s2: &str) -> bool {
         let seq1 = s1.to_lowercase();
         let seq2 = s2.to_lowercase();
         let mut check = true;
@@ -155,11 +155,9 @@ pub mod es1 {
 
                 //println!("{}, {} for {}", count1, count2, seq1[i]);
 
-                if seq1[i] == 'a' && count2 <= 5 * count1 {
-                    check = true;
-                } else if seq1[i] == 't' && count2 <= 10 * count1 {
-                    check = true
-                } else if (seq1[i] == 'c' || seq1[i] == 'g') && count2 >= count1 {
+                if (seq1[i] == 'a' && count2 <= 5 * count1)
+                    || (seq1[i] == 't' && count2 <= 10 * count1)
+                    || ((seq1[i] == 'c' || seq1[i] == 'g') && count2 >= count1) {
                     check = true
                 } else {
                     return false;
@@ -319,7 +317,7 @@ pub mod es2 {
             let mut check_bubble = false;
             loop {
                 if !enm.contains_key(&curr) || !enm.contains_key(&curr1) ||
-                    enm[&curr].len() == 0 || enm[&curr1].len() == 0 {
+                    enm[&curr].is_empty() || enm[&curr1].is_empty() {
                     break;
                 } else if enm[&curr].len() == 2 {
                     sb = curr.clone();
@@ -349,7 +347,7 @@ pub mod es2 {
         }
 
         /// Metodo per la creazione di un grafo di De bruijn a partire da una singola stringa
-        pub fn new_single(seq: &String, k: i32) -> Dbg {
+        pub fn new_single(seq: &str, k: i32) -> Dbg {
             Dbg::new(vec![seq.to_string()], k)
         }
 
@@ -454,11 +452,11 @@ pub mod es2 {
             let mut fileout = File::create(output).expect("error");
             fileout
                 //.write("digraph sample{\n rankdir=\"LR\";\n".as_bytes())
-                .write("digraph sample{\n nodesep=\"0.3\";\nranksep=\"0.3\";\n ".as_bytes())
+                .write_all("digraph sample{\n nodesep=\"0.3\";\nranksep=\"0.3\";\n ".as_bytes())
                 .expect("error");
             for edge in &self.edges {
                 fileout
-                    .write(
+                    .write_all(
                         format!(
                             "\t\"{}\" -> \"{}\" [ label = \" {}\" ];\n",
                             edge.0,
@@ -472,7 +470,7 @@ pub mod es2 {
             if bubble {
                 for edge in &self.bubble {
                     fileout
-                        .write(
+                        .write_all(
                             format!(
                                 "\t\"{}\" -> \"{}\" [ style = \" dashed\" ];\n",
                                 edge.0,
@@ -483,7 +481,7 @@ pub mod es2 {
                         .expect("error");
                 }
             }
-            fileout.write("}".as_bytes()).expect("error");
+            fileout.write_all("}".as_bytes()).expect("error");
         }
     }
 
@@ -526,8 +524,8 @@ pub mod es2 {
     ///
     /// # Examples
     /// ```
-    /// let seq1 = "ATCTTGCATTACCGCCCCAATC".to_string();
-    /// let seq2 = "ATCTTACATTACCGTCCCAACC".to_string();
+    /// let seq1 = "ATCTTGCATTACCGCCCCAATC";
+    /// let seq2 = "ATCTTACATTACCGTCCCAACC";
     /// let muts = esbio::es2::check_mutations(&seq1, &seq2, 6);
     /// let check_index = vec![5, 14, 20];
     /// let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -536,8 +534,8 @@ pub mod es2 {
     /// assert_eq!(check_index, index)
     /// ```
     /// ```
-    /// let seq1 = "TATCTTGCATTACCGCCCCAATC".to_string();
-    /// let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
+    /// let seq1 = "TATCTTGCATTACCGCCCCAATC";
+    /// let seq2 = "GATCTTACATTACCGTCCCAACC";
     /// let muts = esbio::es2::check_mutations(&seq1, &seq2, 6);
     /// let check_index = vec![0, 6, 15, 21];
     /// let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -546,8 +544,8 @@ pub mod es2 {
     /// assert_eq!(check_index, index)
     /// ```
     #[allow(dead_code)]
-    pub fn check_mutations(s1: &String, s2: &String, k: i32) -> (Vec<Mutation>, bool) {
-        if s1.len() != s2.len() || s1.len() == 0 || s2.len() == 0 {
+    pub fn check_mutations(s1: &str, s2: &str, k: i32) -> (Vec<Mutation>, bool) {
+        if s1.len() != s2.len() || s1.is_empty() || s2.is_empty() {
             return (Vec::new(), false);
         }
         let mut mutations: Vec<Mutation> = Vec::new();
@@ -585,8 +583,8 @@ pub mod es2 {
     ///
     /// # Examples
     /// ```
-    /// let seq1 = "ATCTTGCATTACCGCCCCAATC".to_string();
-    /// let seq2 = "ATCTTACATTACCGTCCCAACC".to_string();
+    /// let seq1 = "ATCTTGCATTACCGCCCCAATC";
+    /// let seq2 = "ATCTTACATTACCGTCCCAACC";
     /// let muts = esbio::es2::check_mutations2(&seq1, &seq2, 6);
     /// let check_index = vec![5, 14, 20];
     /// let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -595,8 +593,8 @@ pub mod es2 {
     /// assert_eq!(check_index, index)
     /// ```
     /// ```
-    /// let seq1 = "TATCTTGCATTACCGCCCCAATC".to_string();
-    /// let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
+    /// let seq1 = "TATCTTGCATTACCGCCCCAATC";
+    /// let seq2 = "GATCTTACATTACCGTCCCAACC";
     /// let muts = esbio::es2::check_mutations2(&seq1, &seq2, 6);
     /// let check_index = vec![0, 6, 15, 21];
     /// let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -605,8 +603,8 @@ pub mod es2 {
     /// assert_eq!(check_index, index)
     /// ```
     #[allow(dead_code)]
-    pub fn check_mutations2(s1: &String, s2: &String, k: i32) -> (Vec<Mutation>, bool) {
-        if s1.len() != s2.len() || s1.len() == 0 || s2.len() == 0 {
+    pub fn check_mutations2(s1: &str, s2: &str, k: i32) -> (Vec<Mutation>, bool) {
+        if s1.len() != s2.len() || s1.is_empty() || s2.is_empty() {
             return (Vec::new(), false);
         }
         let mut mutations: Vec<Mutation> = Vec::new();
@@ -630,7 +628,7 @@ pub mod es2 {
         let start = dbg.nstart[0].clone();
         let mut curr = start;
         loop {
-            if !dbg.node_edge_map.contains_key(&curr) || dbg.node_edge_map[&curr].len() == 0 {
+            if !dbg.node_edge_map.contains_key(&curr) || dbg.node_edge_map[&curr].is_empty() {
                 break;
             }
             if dbg.node_edge_map[&curr].len() == 2 {
@@ -651,8 +649,8 @@ pub mod es2 {
     ///
     /// # Examples
     /// ```
-    /// let seq1 = "ATCTTGCATTACCGCCCCAATC".to_string();
-    /// let seq2 = "ATCTTACATTACCGTCCCAACC".to_string();
+    /// let seq1 = "ATCTTGCATTACCGCCCCAATC";
+    /// let seq2 = "ATCTTACATTACCGTCCCAACC";
     /// let muts = esbio::es2::check_mutations3(&seq1, &seq2, 6);
     /// let check_index = vec![5, 14, 20];
     /// let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -661,8 +659,8 @@ pub mod es2 {
     /// assert_eq!(check_index, index)
     /// ```
     /// ```
-    /// let seq1 = "TATCTTGCATTACCGCCCCAATC".to_string();
-    /// let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
+    /// let seq1 = "TATCTTGCATTACCGCCCCAATC";
+    /// let seq2 = "GATCTTACATTACCGTCCCAACC";
     /// let muts = esbio::es2::check_mutations3(&seq1, &seq2, 6);
     /// let check_index = vec![0, 6, 15, 21];
     /// let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -671,8 +669,8 @@ pub mod es2 {
     /// assert_eq!(check_index, index)
     /// ```
     #[allow(dead_code)]
-    pub fn check_mutations3(s1: &String, s2: &String, k: i32) -> (Vec<Mutation>, bool) {
-        if s1.len() != s2.len() || s1.len() == 0 || s2.len() == 0 {
+    pub fn check_mutations3(s1: &str, s2: &str, k: i32) -> (Vec<Mutation>, bool) {
+        if s1.len() != s2.len() || s1.is_empty() || s2.is_empty() {
             return (Vec::new(), false);
         }
         let mut mutations: Vec<Mutation> = Vec::new();
@@ -686,6 +684,7 @@ pub mod es2 {
         }
 
         let dbg = Dbg::new(vec![seq1.clone(), seq2.clone()], k);
+        //dbg.to_dot("outputs/test.dot".to_string(), true);
         let mut curr_ind: usize = 0;
         let mut bubble_ind = 0;
         if dbg.nstart().len() == 2 {
@@ -696,7 +695,7 @@ pub mod es2 {
         let start = dbg.nstart[0].clone();
         let mut curr = start;
         loop {
-            if !dbg.node_edge_map.contains_key(&curr) || dbg.node_edge_map[&curr].len() == 0 {
+            if !dbg.node_edge_map.contains_key(&curr) || dbg.node_edge_map[&curr].is_empty() {
                 break;
             }
             if dbg.node_edge_map[&curr].len() == 2 {
@@ -734,47 +733,45 @@ pub mod es3 {
     /// - peso arco diagonale
     /// # Examples
     /// ```
-    /// let seq1 = "AAACTTTTTTTTT".to_string();
-    /// let seq2 = "AAAGTTCCGAGCG".to_string();
+    /// let seq1 = "AAACTTTTTTTTT";
+    /// let seq2 = "AAAGTTCCGAGCG";
     /// assert_eq!(8, esbio::es3::check_manhattan(&seq1, &seq2, 1, 0, 0));
     /// assert_eq!(8, esbio::es3::check_manhattan(&seq1, &seq2, 0, 1, 0));
     /// ```
     #[allow(dead_code)]
-    pub fn check_manhattan(s1: &String, s2: &String, h: i32, v: i32, d: i32) -> i32 {
+    pub fn check_manhattan(s1: &str, s2: &str, hw: i32, vw: i32, dw: i32) -> i32 {
         let seq1 = s1.to_lowercase();
         let seq2 = s2.to_lowercase();
-        //let mut distance = 0;
         let m = seq1.len();
         let n = seq2.len();
         let mut mm = vec![vec![0; n + 1]; m + 1];
-        let mut b = vec![vec!["-"; n + 1]; m + 1];
+        let mut steps_matrix = vec![vec!["-"; n + 1]; m + 1];
         for i in 1..(m + 1) {
-            mm[i][0] = mm[i - 1][0] + v;
-            b[i][0] = "v";
+            mm[i][0] = mm[i - 1][0] + vw;
+            steps_matrix[i][0] = "v";
         }
         for j in 1..(n + 1) {
-            mm[0][j] = mm[0][j - 1] + h;
-            b[0][j] = "h";
+            mm[0][j] = mm[0][j - 1] + hw;
+            steps_matrix[0][j] = "h";
         }
         for i in 1..(m + 1) {
             for j in 1..(n + 1) {
-                let tmp = cmp::min(mm[i - 1][j] + v, mm[i][j - 1] + h);
+                let tmp = cmp::min(mm[i - 1][j] + vw, mm[i][j - 1] + hw);
                 if seq1.chars().nth(i - 1).unwrap() == seq2.chars().nth(j - 1).unwrap() {
-                    mm[i][j] = cmp::min(tmp, mm[i - 1][j - 1] + d);
-                    b[i][j] = "d";
+                    mm[i][j] = cmp::min(tmp, mm[i - 1][j - 1] + dw);
+                    steps_matrix[i][j] = "d";
                 } else {
                     mm[i][j] = tmp;
                 }
             }
         }
-        let distance = mm[m][n];
         /*for m in M {
             println!("{:?}", m);
         }
         for m in B {
             println!("{:?}", m);
         }*/
-        distance
+        mm[m][n]
     }
 }
 
@@ -787,30 +784,30 @@ pub mod es4 {
     /// Si usa per comodità la griglia vista come matrice
     /// # Examples
     /// ```
-    /// let seq1 = "AAACGCGCTTTTTCCC".to_string();
-    /// let seq2 = "AAAGGGGCGCGCTTTTTAAA".to_string();
+    /// let seq1 = "AAACGCGCTTTTTCCC";
+    /// let seq2 = "AAAGGGGCGCGCTTTTTAAA";
     /// assert_eq!("CGCGCTTTTT", esbio::es4::lcs(&seq1, &seq2));
     /// ```
     #[allow(dead_code)]
-    pub fn lcs(seq1: &String, seq2: &String) -> String {
+    pub fn lcs(seq1: &str, seq2: &str) -> String {
         let m = seq1.len();
         let n = seq2.len();
         let mut mm = vec![vec![0; n + 1]; m + 1];
-        let mut b = vec![vec!["-"; n + 1]; m + 1];
-        let d = 1;
-        let h = -1;
-        let v = -1;
+        let mut steps_matrix = vec![vec!["-"; n + 1]; m + 1];
+        let dw = 1;
+        let hw = -1;
+        let vw = -1;
         //println!("{:?}", M);
         let mut max = 0;
         let mut row = 0;
         let mut col = 0;
         for i in 1..(m + 1) {
             for j in 1..(n + 1) {
-                let mut tmp = cmp::max(mm[i - 1][j] + (i as i32) * v, mm[i][j - 1] + (j as i32) * h);
+                let mut tmp = cmp::max(mm[i - 1][j] + (i as i32) * vw, mm[i][j - 1] + (j as i32) * hw);
                 tmp = cmp::max(tmp, 0);
                 if seq1.chars().nth(i - 1).unwrap() == seq2.chars().nth(j - 1).unwrap() {
-                    mm[i][j] = cmp::max(tmp, mm[i - 1][j - 1] + d);
-                    b[i][j] = "d";
+                    mm[i][j] = cmp::max(tmp, mm[i - 1][j - 1] + dw);
+                    steps_matrix[i][j] = "d";
                     if max < mm[i][j] {
                         max = mm[i][j];
                         row = i;
@@ -847,14 +844,14 @@ pub mod es4 {
         let mut seq = "".to_string();
 
         let (mut i, mut j) = (row, col);
-        let mut check = b[row][col];
+        let mut check = steps_matrix[row][col];
         //println!("check: {} -> {}", check, seq1.chars().nth(i - 1).unwrap());
-        while b[i][j] != "-" {
+        while steps_matrix[i][j] != "-" {
             if check == "d" {
                 seq.push(seq1.chars().nth(i - 1).unwrap());
                 i -= 1;
                 j -= 1;
-                check = b[i][j];
+                check = steps_matrix[i][j];
             } else {
                 continue;
             }
@@ -882,148 +879,148 @@ mod tests {
 
     #[test]
     fn test_es1_1() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_2() {
-        let seq1 = "TTAGCTC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "TTAGCTC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_3() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTTTTTTTTTCC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTTTTTTTTTCC";
         assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_4() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "AAAAAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "AAAAAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_5() {
-        let seq1 = "ATAGCC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAGCC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_6() {
-        let seq1 = "ATAAGCTC".to_string();
-        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAAGCTC";
+        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC";
         assert!(check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_7() {
-        let seq1 = "ATAAGCTC".to_string();
-        let seq2 = "AAACCCTAAAAAAAAAAGGGGCCCCCTTTTTTT".to_string();
+        let seq1 = "ATAAGCTC";
+        let seq2 = "AAACCCTAAAAAAAAAAGGGGCCCCCTTTTTTT";
         assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_8() {
-        let seq1 = "".to_string();
-        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "";
+        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_9() {
-        let seq1 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
-        let seq2 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
+        let seq1 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+        let seq2 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
         assert!(check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es1_10() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "ATAGCTC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "ATAGCTC";
         assert!(check_virus(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_1() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_2() {
-        let seq1 = "TTAGCTC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "TTAGCTC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_3() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTTTTTTTTTCC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTTTTTTTTTCC";
         assert!(!check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_4() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "AAAAAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "AAAAAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_5() {
-        let seq1 = "ATAGCC".to_string();
-        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAGCC";
+        let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_6() {
-        let seq1 = "ATAAGCTC".to_string();
-        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "ATAAGCTC";
+        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC";
         assert!(check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_7() {
-        let seq1 = "ATAAGCTC".to_string();
-        let seq2 = "AAACCCTAAAAAAAAAAGGGGCCCCCTTTTTTT".to_string();
+        let seq1 = "ATAAGCTC";
+        let seq2 = "AAACCCTAAAAAAAAAAGGGGCCCCCTTTTTTT";
         assert!(!check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_8() {
-        let seq1 = "".to_string();
-        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC".to_string();
+        let seq1 = "";
+        let seq2 = "AAATAAAAAAAAAAGGGGCCCCCTTTTTTTCC";
         assert!(!check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_9() {
-        let seq1 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
-        let seq2 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
+        let seq1 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+        let seq2 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
         assert!(check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es11_10() {
-        let seq1 = "ATAGCTC".to_string();
-        let seq2 = "ATAGCTC".to_string();
+        let seq1 = "ATAGCTC";
+        let seq2 = "ATAGCTC";
         assert!(check_virus2(&seq1, &seq2));
     }
 
     #[test]
     fn test_es2_1() {
-        let seq1 = "ATCTTGCATTACCGCCCCAATC".to_string();
-        let seq2 = "ATCTTACATTACCGTCCCAACC".to_string();
+        let seq1 = "ATCTTGCATTACCGCCCCAATC";
+        let seq2 = "ATCTTACATTACCGTCCCAACC";
         let muts = check_mutations(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         let check_index = vec![5, 14, 20];
@@ -1035,8 +1032,8 @@ mod tests {
 
     #[test]
     fn test_es2_2() {
-        let seq1 = "TATCTTGCATTACCGCCCCAATC".to_string();
-        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
+        let seq1 = "TATCTTGCATTACCGCCCCAATC";
+        let seq2 = "GATCTTACATTACCGTCCCAACC";
         let muts = check_mutations(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         let check_index = vec![0, 6, 15, 21];
@@ -1048,8 +1045,8 @@ mod tests {
 
     #[test]
     fn test_es2_3() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "GATCTTACATTACCGTCCCAACC";
         let muts = check_mutations(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
@@ -1058,8 +1055,8 @@ mod tests {
 
     #[test]
     fn test_es2_4() {
-        let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
-        let seq2 = "".to_string();
+        let seq1 = "TATCTTGCATTACCGCCCCCAAC";
+        let seq2 = "";
         let muts = check_mutations(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
@@ -1068,8 +1065,8 @@ mod tests {
 
     #[test]
     fn test_es2_5() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "TATCTTGCATTACCGCCCCAAC".to_string();
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "TATCTTGCATTACCGCCCCAAC";
         let muts = check_mutations(&seq1, &seq2, 6);
         assert_eq!(muts.1, true);
         println!("mutations: {:?}", muts);
@@ -1078,8 +1075,8 @@ mod tests {
 
     #[test]
     fn test_es2_6() {
-        let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
-        let seq2 = "AATCTTGCATTACCGCCCCCAAA".to_string();
+        let seq1 = "TATCTTGCATTACCGCCCCCAAC";
+        let seq2 = "AATCTTGCATTACCGCCCCCAAA";
         let muts = check_mutations(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.1, true);
@@ -1087,77 +1084,10 @@ mod tests {
     }
 
     #[test]
-    fn test_es21_1() {
-        let seq1 = "ATCTTGCATTACCGCCCCAATC".to_string();
-        let seq2 = "ATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 6);
-        println!("mutations: {:?}", muts);
-        let check_index = vec![5, 14, 20];
-        let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
-        assert_eq!(muts.1, true);
-        assert_eq!(muts.0.len(), 3);
-        assert_eq!(check_index, index);
-    }
-
-    #[test]
-    fn test_es21_2() {
-        let seq1 = "TATCTTGCATTACCGCCCCAATC".to_string();
-        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 6);
-        println!("mutations: {:?}", muts);
-        let check_index = vec![0, 6, 15, 21];
-        let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
-        assert_eq!(muts.1, true);
-        assert_eq!(muts.0.len(), 4);
-        assert_eq!(check_index, index);
-    }
-
-    #[test]
-    fn test_es21_3() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 6);
-        assert_eq!(muts.1, false);
-        println!("mutations: {:?}", muts);
-        assert_eq!(muts.0.len(), 0);
-    }
-
-    #[test]
-    fn test_es21_4() {
-        let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
-        let seq2 = "".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 6);
-        assert_eq!(muts.1, false);
-        println!("mutations: {:?}", muts);
-        assert_eq!(muts.0.len(), 0);
-    }
-
-    #[test]
-    fn test_es21_5() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 6);
-        assert_eq!(muts.1, true);
-        println!("mutations: {:?}", muts);
-        assert_eq!(muts.0.len(), 0);
-    }
-
-    #[test]
-    fn test_es21_6() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "AATCTTGCATTACCGCCCCAAA".to_string();
-        let muts = check_mutations2(&seq1, &seq2, 6);
-        println!("mutations: {:?}", muts);
-        assert_eq!(muts.1, true);
-        assert_eq!(muts.0.len(), 2);
-    }
-
-
-    #[test]
     fn test_es22_1() {
-        let seq1 = "ATCTTGCATTACCGCCCCAATC".to_string();
-        let seq2 = "ATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 6);
+        let seq1 = "ATCTTGCATTACCGCCCCAATC";
+        let seq2 = "ATCTTACATTACCGTCCCAACC";
+        let muts = check_mutations2(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         let check_index = vec![5, 14, 20];
         let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -1168,9 +1098,9 @@ mod tests {
 
     #[test]
     fn test_es22_2() {
-        let seq1 = "TATCTTGCATTACCGCCCCAATC".to_string();
-        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 6);
+        let seq1 = "TATCTTGCATTACCGCCCCAATC";
+        let seq2 = "GATCTTACATTACCGTCCCAACC";
+        let muts = check_mutations2(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         let check_index = vec![0, 6, 15, 21];
         let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
@@ -1181,9 +1111,9 @@ mod tests {
 
     #[test]
     fn test_es22_3() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "GATCTTACATTACCGTCCCAACC".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 6);
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "GATCTTACATTACCGTCCCAACC";
+        let muts = check_mutations2(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1191,9 +1121,9 @@ mod tests {
 
     #[test]
     fn test_es22_4() {
-        let seq1 = "TATCTTGCATTACCGCCCCCAAC".to_string();
-        let seq2 = "".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 6);
+        let seq1 = "TATCTTGCATTACCGCCCCCAAC";
+        let seq2 = "";
+        let muts = check_mutations2(&seq1, &seq2, 6);
         assert_eq!(muts.1, false);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1201,9 +1131,9 @@ mod tests {
 
     #[test]
     fn test_es22_5() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let muts = check_mutations3(&seq1, &seq2, 6);
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "TATCTTGCATTACCGCCCCAAC";
+        let muts = check_mutations2(&seq1, &seq2, 6);
         assert_eq!(muts.1, true);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.0.len(), 0);
@@ -1211,8 +1141,74 @@ mod tests {
 
     #[test]
     fn test_es22_6() {
-        let seq1 = "TATCTTGCATTACCGCCCCAAC".to_string();
-        let seq2 = "AATCTTGCATTACCGCCCCAAA".to_string();
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "AATCTTGCATTACCGCCCCAAA";
+        let muts = check_mutations2(&seq1, &seq2, 6);
+        println!("mutations: {:?}", muts);
+        assert_eq!(muts.1, true);
+        assert_eq!(muts.0.len(), 2);
+    }
+
+    #[test]
+    fn test_es23_1() {
+        let seq1 = "ATCTTGCATTACCGCCCCAATC";
+        let seq2 = "ATCTTACATTACCGTCCCAACC";
+        let muts = check_mutations3(&seq1, &seq2, 6);
+        println!("mutations: {:?}", muts);
+        let check_index = vec![5, 14, 20];
+        let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
+        assert_eq!(muts.1, true);
+        assert_eq!(muts.0.len(), 3);
+        assert_eq!(check_index, index);
+    }
+
+    #[test]
+    fn test_es23_2() {
+        let seq1 = "TATCTTGCATTACCGCCCCAATC";
+        let seq2 = "GATCTTACATTACCGTCCCAACC";
+        let muts = check_mutations3(&seq1, &seq2, 6);
+        println!("mutations: {:?}", muts);
+        let check_index = vec![0, 6, 15, 21];
+        let index: Vec<usize> = muts.0.iter().map(|e| e.index()).collect();
+        assert_eq!(muts.1, true);
+        assert_eq!(muts.0.len(), 4);
+        assert_eq!(check_index, index);
+    }
+
+    #[test]
+    fn test_es23_3() {
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "GATCTTACATTACCGTCCCAACC";
+        let muts = check_mutations3(&seq1, &seq2, 6);
+        assert_eq!(muts.1, false);
+        println!("mutations: {:?}", muts);
+        assert_eq!(muts.0.len(), 0);
+    }
+
+    #[test]
+    fn test_es23_4() {
+        let seq1 = "TATCTTGCATTACCGCCCCCAAC";
+        let seq2 = "";
+        let muts = check_mutations3(&seq1, &seq2, 6);
+        assert_eq!(muts.1, false);
+        println!("mutations: {:?}", muts);
+        assert_eq!(muts.0.len(), 0);
+    }
+
+    #[test]
+    fn test_es23_5() {
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "TATCTTGCATTACCGCCCCAAC";
+        let muts = check_mutations3(&seq1, &seq2, 6);
+        assert_eq!(muts.1, true);
+        println!("mutations: {:?}", muts);
+        assert_eq!(muts.0.len(), 0);
+    }
+
+    #[test]
+    fn test_es23_6() {
+        let seq1 = "TATCTTGCATTACCGCCCCAAC";
+        let seq2 = "AATCTTGCATTACCGCCCCAAA";
         let muts = check_mutations3(&seq1, &seq2, 6);
         println!("mutations: {:?}", muts);
         assert_eq!(muts.1, true);
@@ -1221,8 +1217,8 @@ mod tests {
 
     #[test]
     fn test_es3_1() {
-        let seq1 = "AAACTTT".to_string();
-        let seq2 = "AAAGTTC".to_string();
+        let seq1 = "AAACTTT";
+        let seq2 = "AAAGTTC";
         let distance = check_manhattan(&seq1, &seq2, 1, 0, 0);
         println!("hamming: {:?}", distance);
         assert_eq!(distance, 2);
@@ -1230,8 +1226,8 @@ mod tests {
 
     #[test]
     fn test_es3_2() {
-        let seq1 = "AAACTTTTTTTTT".to_string();
-        let seq2 = "AAAGTTCCGAGCG".to_string();
+        let seq1 = "AAACTTTTTTTTT";
+        let seq2 = "AAAGTTCCGAGCG";
         let distance = check_manhattan(&seq1, &seq2, 1, 0, 0);
         println!("hamming: {:?}", distance);
         assert_eq!(distance, 8);
@@ -1239,8 +1235,8 @@ mod tests {
 
     #[test]
     fn test_es3_3() {
-        let seq1 = "AAACTT".to_string();
-        let seq2 = "AAACTT".to_string();
+        let seq1 = "AAACTT";
+        let seq2 = "AAACTT";
         let distance = check_manhattan(&seq1, &seq2, 1, 0, 0);
         println!("hamming: {:?}", distance);
         assert_eq!(distance, 0);
@@ -1248,8 +1244,8 @@ mod tests {
 
     #[test]
     fn test_es4_1() {
-        let seq1 = "AAACGCGCTTTTTCCC".to_string();
-        let seq2 = "AAAGGGGCGCGCTTTTTAAA".to_string();
+        let seq1 = "AAACGCGCTTTTTCCC";
+        let seq2 = "AAAGGGGCGCGCTTTTTAAA";
         let subs = lcs(&seq1, &seq2);
         println!("lcs: {}", subs);
         assert_eq!(subs, "CGCGCTTTTT");
@@ -1257,8 +1253,8 @@ mod tests {
 
     #[test]
     fn test_es4_2() {
-        let seq1 = "AAACGCGCTTTTTCCCAT".to_string();
-        let seq2 = "AAAGGGGCGCGCTTTTTAAA".to_string();
+        let seq1 = "AAACGCGCTTTTTCCCAT";
+        let seq2 = "AAAGGGGCGCGCTTTTTAAA";
         let subs = lcs(&seq1, &seq2);
         println!("lcs: {}", subs);
         assert_eq!(subs, "CGCGCTTTTT");
@@ -1266,8 +1262,8 @@ mod tests {
 
     #[test]
     fn test_es4_3() {
-        let seq1 = "AAACGCGCTTTTTCCCATCGCGCTTTTTTAAA".to_string();
-        let seq2 = "AAAGGGGCGCGCTTTTTAAACGCGCTTTTTTC".to_string();
+        let seq1 = "AAACGCGCTTTTTCCCATCGCGCTTTTTTAAA";
+        let seq2 = "AAAGGGGCGCGCTTTTTAAACGCGCTTTTTTC";
         let subs = lcs(&seq1, &seq2);
         println!("lcs: {}", subs);
         assert_eq!(subs, "AAACGCGCTTTTT");
