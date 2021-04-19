@@ -191,6 +191,7 @@ pub mod es2 {
 
     /// Funzione per la creazione dello spettro a partire da un vettore di stringhe.
     ///
+    /// Le sequenze vengono consumate quindi conviene passare cloni.
     /// # Examples
     /// ```
     /// let k = 6;
@@ -218,6 +219,7 @@ pub mod es2 {
 
     /// Funzione per la creazione del kmer-set a partire da un vettore di stringhe.
     ///
+    /// Le sequenze vengono consumate quindi conviene passare cloni.
     /// # Examples
     /// ```
     /// let k = 6;
