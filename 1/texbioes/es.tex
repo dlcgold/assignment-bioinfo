@@ -70,7 +70,7 @@
 \begin{document}
 \maketitle
 
-\definecolor{shadecolor}{gray}{0.80}
+\definecolor{shadecolor}{gray}{0.70}
 \setlist{leftmargin = 2cm}
 \newtheorem{teorema}{Teorema}
 \newtheorem{definizione}{Definizione}
@@ -864,7 +864,8 @@ Nel dettaglio, tralasciando quanto uguale alla prima versione:
 quale base della mutazione appartiene alla sequenza di riferimento o a quella
 mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice
 della mutazione.}\\
-%aggiungere esempio
+% aggiungere esempio
+\newpage
 \section{Versione 3}
 Potenzialmente, in fase di creazione del \textit{grafo di De Bruijn}, potremmo
 tenere traccia degli archi che ``saltano'' le \textit{bubble}, come in figura
@@ -1086,8 +1087,9 @@ Durante lo svolgimento dell'assignment è stato elaborato anche il codice in
 \textit{Rust} per i vari esercizi, con i vari unit test correlati. In merito al
 codice relativo ai grafi di De Bruijn si specifica che alcuni metodi sono
 possibili solo grazie alle assunzioni fatte in merito all'esercizio 2.\\
-Il codice, insieme al \TeX  di questa relazione, è disponibile all'indirizzo:
-\url{https://github.com/dlcgold/es_bio}.\\
+Il codice, insieme al \TeX\,  di questa relazione, è disponibile nella
+repository: \url{https://github.com/dlcgold/es_bio}.\\
+\\
 Per eseguire i test:
 \begin{shaded}
   \noindent

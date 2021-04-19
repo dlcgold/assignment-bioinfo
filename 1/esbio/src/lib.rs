@@ -46,6 +46,11 @@ pub mod es1 {
     /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
     /// assert!(!esbio::es1::check_virus(&seq1, &seq2));
     /// ```
+    ///  ```
+    /// let seq1 = "ATAGCTC".to_string();
+    /// let seq2 = "ATAGCTC".to_string();
+    /// assert!(esbio::es1::check_virus(&seq1, &seq2));
+    /// ```
     #[allow(dead_code)]
     pub fn check_virus(s1: &String, s2: &String) -> bool {
         let seq1 = s1.to_lowercase();
@@ -100,6 +105,11 @@ pub mod es1 {
     /// let seq1 = "TTAGCTC".to_string();
     /// let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
     /// assert!(!esbio::es1::check_virus2(&seq1, &seq2));
+    /// ```
+    ///  ```
+    /// let seq1 = "ATAGCTC".to_string();
+    /// let seq2 = "ATAGCTC".to_string();
+    /// assert!(esbio::es1::check_virus2(&seq1, &seq2));
     /// ```
     #[allow(dead_code)]
     pub fn check_virus2(s1: &String, s2: &String) -> bool {
@@ -934,6 +944,13 @@ mod tests {
     }
 
     #[test]
+    fn test_es1_10() {
+        let seq1 = "ATAGCTC".to_string();
+        let seq2 = "ATAGCTC".to_string();
+        assert!(check_virus(&seq1, &seq2));
+    }
+
+    #[test]
     fn test_es11_1() {
         let seq1 = "ATAGCTC".to_string();
         let seq2 = "AAATAAAGGGGCCCCCTTTTTTTCC".to_string();
@@ -993,6 +1010,13 @@ mod tests {
     fn test_es11_9() {
         let seq1 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
         let seq2 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC".to_string();
+        assert!(check_virus2(&seq1, &seq2));
+    }
+
+    #[test]
+    fn test_es11_10() {
+        let seq1 = "ATAGCTC".to_string();
+        let seq2 = "ATAGCTC".to_string();
         assert!(check_virus2(&seq1, &seq2));
     }
 
