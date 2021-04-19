@@ -191,7 +191,6 @@ pub mod es2 {
 
     /// Funzione per la creazione dello spettro a partire da un vettore di stringhe.
     ///
-    /// Le sequenze vengono consumate quindi conviene passare cloni.
     /// # Examples
     /// ```
     /// let k = 6;
@@ -219,7 +218,6 @@ pub mod es2 {
 
     /// Funzione per la creazione del kmer-set a partire da un vettore di stringhe.
     ///
-    /// Le sequenze vengono consumate quindi conviene passare cloni.
     /// # Examples
     /// ```
     /// let k = 6;
@@ -279,8 +277,8 @@ pub mod es2 {
     #[allow(dead_code)]
     impl Dbg {
         /// Metodo per la creazione di un grafo di De bruijn a partire da un vettore di stringhe
-        pub fn new(reads: Vec<String>, k: i32) -> Dbg {
-            let kmers = get_kmers_unique(&mut reads.clone(), k);
+        pub fn new(mut reads: Vec<String>, k: i32) -> Dbg {
+            let kmers = get_kmers_unique(&mut reads, k);
             let mut n: HashSet<String> = HashSet::new();
             let mut nst: HashSet<String> = HashSet::new();
             let mut e: Vec<(String, String)> = Vec::new();
@@ -306,7 +304,7 @@ pub mod es2 {
                     enm.insert(start.to_string(), vec![end.to_string()]);
                 } else {
                     enm.entry(start.to_string())
-                        .or_insert(vec![])
+                        .or_insert_with(Vec::new)
                         .push(end.to_string());
                 }
             }
@@ -357,7 +355,7 @@ pub mod es2 {
             let mut trail = Vec::new();
             let mut start = match self.nstart.is_empty() {
                 true => self.nodes.iter().next().unwrap().to_string(),
-                false => self.nstart.iter().next().unwrap().to_string(),
+                false => self.nstart.get(0).unwrap().to_string(),
             };
             trail.push(start.clone());
             loop {
@@ -367,7 +365,7 @@ pub mod es2 {
                     if !map.contains_key(&prev) {
                         break;
                     }
-                    let next = map.entry(prev.to_string()).or_insert(vec![]).pop().unwrap();
+                    let next = map.entry(prev.to_string()).or_insert_with(Vec::new).pop().unwrap();
                     if map[&prev.to_string()].is_empty() {
                         map.remove(&prev);
                     }
@@ -379,14 +377,20 @@ pub mod es2 {
                 }
                 let index = (&trail).iter().position(|r| r == &start).unwrap();
                 let mut trailtmp = Vec::new();
-                for i in 0..index + 1 {
+                /*for i in 0..index + 1 {
                     trailtmp.push(trail[i].clone());
+                }*/
+                for item in trail.iter().take(index + 1) {
+                    trailtmp.push(item.clone());
                 }
                 for elem in tmp {
                     trailtmp.push(elem.clone());
                 }
-                for i in index + 1..trail.len() {
+                /*for i in index + 1..trail.len() {
                     trailtmp.push(trail[i].clone());
+                }*/
+                for item in trail.iter().skip(index + 1) {
+                    trailtmp.push(item.clone());
                 }
                 trail = trailtmp;
                 if map.is_empty() {
@@ -617,7 +621,7 @@ pub mod es2 {
             return (Vec::new(), false);
         }
 
-        let dbg = Dbg::new(vec![seq1.clone(), seq2.clone()], k);
+        let dbg = Dbg::new(vec![seq1, seq2], k);
         //println!("{:?}", dbg.bubble);
         let mut curr_ind: usize = 0;
         if dbg.nstart().len() == 2 {
@@ -683,7 +687,7 @@ pub mod es2 {
             return (Vec::new(), false);
         }
 
-        let dbg = Dbg::new(vec![seq1.clone(), seq2.clone()], k);
+        let dbg = Dbg::new(vec![seq1, seq2], k);
         //dbg.to_dot("outputs/test.dot".to_string(), true);
         let mut curr_ind: usize = 0;
         let mut bubble_ind = 0;
