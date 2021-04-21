@@ -86,10 +86,12 @@
     \ \thechapter.\ #1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
 \tableofcontents
-\chapter{esercizio 1}
+\chapter{Esercizio 1}
 \section{Versione 1}
 Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$ indicizzate a partire dalla
-posizione 0, per comodità.\\
+posizione 0, per comodità. L'eventuale presenza di minuscole e maiuscole
+mischiate non si identifica come un problema e viene risolto portando tutto in
+minuscolo nell'algoritmo.\\
 L'algoritmo si divide in due parti:
 \begin{enumerate}
   \item divisione in ``token'' delle due stringhe. A partire da ogni stringa si
@@ -378,7 +380,7 @@ Si ha quindi il seguente pseudocodice.
     $cm \geq co$} 
     \State $check \gets \top$
     \Else
-    \State  \textbf{return} $\bot$
+    \State \textbf{return} $\bot$
     \EndIf
     \State $co \gets 0$
     \State $cm \gets 0$
@@ -416,7 +418,10 @@ Nel dettaglio:
   secondo le specifiche date per le mutazioni, aggiornando la variabile
   booleana (operazione in se superflua ma comoda dal punto di vista della
   chiarezza dell'algoritmo). Se i controlli non sono superati si ritorna $\bot$,
-  interrompendo l'esecuzione 
+  interrompendo l'esecuzione. In termini di scrittura sarebbe bastato un solo
+  \textit{if} che controllasse che una delle tre condizioni non fosse rispettata
+  per ritornare $\bot$ ma in termini di comprensione del codice si è preferito
+  usare, per quanto inutile, la variabile d'appoggio $check$
   \item alle righe 33-34 si azzerano i due contatori, in modo da poter iniziare
   un nuovo controllo con le nuove sequenze di caratteri
   \item alle righe 35-37 si verifica che, qualora l'indice che itera sulla prima
@@ -435,9 +440,10 @@ costo lineare si ha in entrambi i casi un tempo quadratico nel caso peggiore,
 anche se si potrebbe fare uno studio più approfondito. 
 \chapter{Esercizio 2}
 \section{Versione 1}
-Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$ (anche se come
-nell'esercizio precedente poi si procederà con il \texttt{lowercase})
-indicizzate a partire dalla posizione 0, per comodità.\\
+Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$
+indicizzate a partire dalla posizione 0, per comodità. L'eventuale presenza di
+minuscole e maiuscole mischiate non si identifica come un problema e viene
+risolto portando tutto in minuscolo nell'algoritmo.\\
 Si fanno le seguenti assunzioni:
 \begin{itemize}
   \item si assume che le mutazione siano solo cambi di base, non avendo quindi

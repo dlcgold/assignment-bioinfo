@@ -1,7 +1,6 @@
 //! # Assignment 1 Bioinformatica, Davide Cozzi, 829827
 //! Crate relativo a parte del primo assignment di Bioinformatica per l'anno 2020/2021.
 
-
 /// Primo esercizio
 pub mod es1 {
     /// Funzione per la creazione dei token.
@@ -93,7 +92,6 @@ pub mod es1 {
         s2.len() >= s1.len()
     }
 
-
     /// Funzione per la versione 2 del controllo delle mutazioni, versione basata su indici dell'esercizio 1.
     /// # Examples
     /// ```
@@ -115,7 +113,7 @@ pub mod es1 {
     pub fn check_virus2(s1: &str, s2: &str) -> bool {
         let seq1 = s1.to_lowercase();
         let seq2 = s2.to_lowercase();
-        let mut check = true;
+        //let mut check = true;
         if seq1.is_empty() || seq2.is_empty() {
             return false;
         }
@@ -125,53 +123,31 @@ pub mod es1 {
         let seq2: Vec<char> = seq2.chars().collect();
         let mut j = 0;
         for i in 0..seq1.len() {
-            //println!("{}", i);
             count1 += 1;
-            //println!("s1: {}{}", seq1[i], seq1[i + 1]);
-            /* if i == seq1.len() - 1 {
-             println!("{},{}|{},{}", i, seq1.len(), j, seq2.len());
-             if i == seq1.len() && j != seq2.len() {
-                 return false;
-             }
-         }*/
             if i == seq1.len() - 1 || seq1[i] != seq1[i + 1] {
-                //println!("s12: {}{}", seq1[i], seq2[j]);
                 if seq1[i] != seq2[j] {
                     return false;
                 }
-
-                //println!("s2: {}{}", seq2[j], seq2[j + 1]);
-                //j += 1;
                 while j != seq2.len() - 1 && seq2[j] == seq2[j + 1] {
-                    //println!("s2: {}{}", seq2[j], seq2[j + 1]);
                     count2 += 1;
                     j += 1;
-                    /*if j == seq2.len() - 1 {
-                    break;
-                }*/
                 }
                 count2 += 1;
                 j += 1;
-
-                //println!("{}, {} for {}", count1, count2, seq1[i]);
-
-                if (seq1[i] == 'a' && count2 <= 5 * count1)
+                if !((seq1[i] == 'a' && count2 <= 5 * count1)
                     || (seq1[i] == 't' && count2 <= 10 * count1)
-                    || ((seq1[i] == 'c' || seq1[i] == 'g') && count2 >= count1) {
-                    check = true
-                } else {
+                    || ((seq1[i] == 'c' || seq1[i] == 'g') && count2 >= count1))
+                {
                     return false;
                 }
                 count2 = 0;
                 count1 = 0;
             }
-            //println!("{},{}|{},{}", i, seq1.len(), j, seq2.len());
             if i == seq1.len() - 1 && j != seq2.len() {
                 return false;
             }
         }
-        // println!("check {}", check);
-        check
+        true
     }
 }
 
@@ -180,7 +156,7 @@ pub mod es1 {
 /// Il codice relativo ai grafi di De Bruijn si deve assumere funzionante solo nei casi
 /// coperti, tramite le varie assunzioni, dal secondo esercizio
 pub mod es2 {
-    use std::collections::{HashSet, HashMap};
+    use std::collections::{HashMap, HashSet};
     use std::fs::File;
     use std::io::Write;
 
@@ -316,8 +292,11 @@ pub mod es2 {
             let mut sb = String::new();
             let mut check_bubble = false;
             loop {
-                if !enm.contains_key(&curr) || !enm.contains_key(&curr1) ||
-                    enm[&curr].is_empty() || enm[&curr1].is_empty() {
+                if !enm.contains_key(&curr)
+                    || !enm.contains_key(&curr1)
+                    || enm[&curr].is_empty()
+                    || enm[&curr1].is_empty()
+                {
                     break;
                 } else if enm[&curr].len() == 2 {
                     sb = curr.clone();
@@ -367,7 +346,11 @@ pub mod es2 {
                     if !map.contains_key(&prev) {
                         break;
                     }
-                    let next = map.entry(prev.to_string()).or_insert_with(Vec::new).pop().unwrap();
+                    let next = map
+                        .entry(prev.to_string())
+                        .or_insert_with(Vec::new)
+                        .pop()
+                        .unwrap();
                     if map[&prev.to_string()].is_empty() {
                         map.remove(&prev);
                     }
@@ -445,10 +428,14 @@ pub mod es2 {
         }
 
         /// Metodo getter per il cammino Euleriano
-        pub fn eulerian_path(&self) -> &Vec<String> { &self.eulerian_path }
+        pub fn eulerian_path(&self) -> &Vec<String> {
+            &self.eulerian_path
+        }
 
         /// Metodo getter per ottenere eventyale ordine degli inizi delle bubble
-        pub fn bubble(&self) -> &Vec<(String, String)> { &self.bubble }
+        pub fn bubble(&self) -> &Vec<(String, String)> {
+            &self.bubble
+        }
 
         /// Metodo per la stampa del grafo in formato DOT
         ///
@@ -469,7 +456,7 @@ pub mod es2 {
                             edge.1,
                             edge.1.chars().last().unwrap()
                         )
-                            .as_bytes(),
+                        .as_bytes(),
                     )
                     .expect("error");
             }
@@ -479,10 +466,9 @@ pub mod es2 {
                         .write_all(
                             format!(
                                 "\t\"{}\" -> \"{}\" [ style = \" dashed\" ];\n",
-                                edge.0,
-                                edge.1
+                                edge.0, edge.1
                             )
-                                .as_bytes(),
+                            .as_bytes(),
                         )
                         .expect("error");
                 }
@@ -490,7 +476,6 @@ pub mod es2 {
             fileout.write_all("}".as_bytes()).expect("error");
         }
     }
-
 
     /// Struct per rappresentare una mutazione.
     ///
@@ -505,22 +490,31 @@ pub mod es2 {
         index: usize,
     }
 
-
     #[allow(dead_code)]
     impl Mutation {
         /// Metodo di creazione di una mutazione
         pub fn new(ibase: char, fbase: char, index: usize) -> Self {
-            Mutation { ibase, fbase, index }
+            Mutation {
+                ibase,
+                fbase,
+                index,
+            }
         }
 
         /// Metodo getter per la prima base della mutazione
-        pub fn ibase(&self) -> char { self.ibase }
+        pub fn ibase(&self) -> char {
+            self.ibase
+        }
 
         /// Metodo getter per la seconda base della mutazione
-        pub fn fbase(&self) -> char { self.fbase }
+        pub fn fbase(&self) -> char {
+            self.fbase
+        }
 
         /// Metodo getter per l'indice della mutazione
-        pub fn index(&self) -> usize { self.index }
+        pub fn index(&self) -> usize {
+            self.index
+        }
     }
 
     /// Funzione per il controllo di mutazione dell'esercizio 2, versione 1.
@@ -559,21 +553,27 @@ pub mod es2 {
         let seq2 = s2.to_lowercase();
         let kmer1 = get_kmers_unique(&mut vec![seq1.clone()], k);
         let kmer2 = get_kmers_unique(&mut vec![seq2.clone()], k);
-        if kmer1.len() != seq1.len() - ((k - 1) as usize) || kmer2.len() != seq2.len() - ((k - 1) as usize) {
+        if kmer1.len() != seq1.len() - ((k - 1) as usize)
+            || kmer2.len() != seq2.len() - ((k - 1) as usize)
+        {
             return (Vec::new(), false);
         }
         let mut curr_ind: usize = 0;
         if kmer1[0].chars().next().unwrap() != kmer2[0].chars().next().unwrap() {
-            mutations.push(Mutation::new(kmer1[0].chars().next().unwrap(),
-                                         kmer2[0].chars().next().unwrap(),
-                                         0));
+            mutations.push(Mutation::new(
+                kmer1[0].chars().next().unwrap(),
+                kmer2[0].chars().next().unwrap(),
+                0,
+            ));
             curr_ind += 1;
         }
         while curr_ind < kmer1.len() {
             if kmer1[curr_ind].chars().last().unwrap() != kmer2[curr_ind].chars().last().unwrap() {
-                mutations.push(Mutation::new(kmer1[curr_ind].chars().last().unwrap(),
-                                             kmer2[curr_ind].chars().last().unwrap(),
-                                             k as usize - 1 + curr_ind));
+                mutations.push(Mutation::new(
+                    kmer1[curr_ind].chars().last().unwrap(),
+                    kmer2[curr_ind].chars().last().unwrap(),
+                    k as usize - 1 + curr_ind,
+                ));
                 curr_ind += k as usize;
             } else {
                 curr_ind += 1;
@@ -619,7 +619,9 @@ pub mod es2 {
 
         let kmer1 = get_kmers_unique(&mut vec![seq1.clone()], k);
         let kmer2 = get_kmers_unique(&mut vec![seq2.clone()], k);
-        if kmer1.len() != seq1.len() - ((k - 1) as usize) || kmer2.len() != seq2.len() - ((k - 1) as usize) {
+        if kmer1.len() != seq1.len() - ((k - 1) as usize)
+            || kmer2.len() != seq2.len() - ((k - 1) as usize)
+        {
             return (Vec::new(), false);
         }
 
@@ -627,9 +629,11 @@ pub mod es2 {
         //println!("{:?}", dbg.bubble);
         let mut curr_ind: usize = 0;
         if dbg.nstart().len() == 2 {
-            mutations.push(Mutation::new(dbg.nstart()[0].chars().next().unwrap(),
-                                         dbg.nstart()[1].chars().next().unwrap(),
-                                         0));
+            mutations.push(Mutation::new(
+                dbg.nstart()[0].chars().next().unwrap(),
+                dbg.nstart()[1].chars().next().unwrap(),
+                0,
+            ));
         }
         let start = dbg.nstart[0].clone();
         let mut curr = start;
@@ -638,9 +642,11 @@ pub mod es2 {
                 break;
             }
             if dbg.node_edge_map[&curr].len() == 2 {
-                mutations.push(Mutation::new(dbg.node_edge_map[&curr][0].chars().last().unwrap(),
-                                             dbg.node_edge_map[&curr][1].chars().last().unwrap(),
-                                             k as usize - 1 + curr_ind));
+                mutations.push(Mutation::new(
+                    dbg.node_edge_map[&curr][0].chars().last().unwrap(),
+                    dbg.node_edge_map[&curr][1].chars().last().unwrap(),
+                    k as usize - 1 + curr_ind,
+                ));
             }
             curr = dbg.node_edge_map[&curr][0].clone();
             curr_ind += 1;
@@ -685,7 +691,9 @@ pub mod es2 {
 
         let kmer1 = get_kmers_unique(&mut vec![seq1.clone()], k);
         let kmer2 = get_kmers_unique(&mut vec![seq2.clone()], k);
-        if kmer1.len() != seq1.len() - ((k - 1) as usize) || kmer2.len() != seq2.len() - ((k - 1) as usize) {
+        if kmer1.len() != seq1.len() - ((k - 1) as usize)
+            || kmer2.len() != seq2.len() - ((k - 1) as usize)
+        {
             return (Vec::new(), false);
         }
 
@@ -694,9 +702,11 @@ pub mod es2 {
         let mut curr_ind: usize = 0;
         let mut bubble_ind = 0;
         if dbg.nstart().len() == 2 {
-            mutations.push(Mutation::new(dbg.nstart()[0].chars().next().unwrap(),
-                                         dbg.nstart()[1].chars().next().unwrap(),
-                                         0));
+            mutations.push(Mutation::new(
+                dbg.nstart()[0].chars().next().unwrap(),
+                dbg.nstart()[1].chars().next().unwrap(),
+                0,
+            ));
         }
         let start = dbg.nstart[0].clone();
         let mut curr = start;
@@ -705,9 +715,11 @@ pub mod es2 {
                 break;
             }
             if dbg.node_edge_map[&curr].len() == 2 {
-                mutations.push(Mutation::new(dbg.node_edge_map[&curr][0].chars().last().unwrap(),
-                                             dbg.node_edge_map[&curr][1].chars().last().unwrap(),
-                                             k as usize - 1 + curr_ind));
+                mutations.push(Mutation::new(
+                    dbg.node_edge_map[&curr][0].chars().last().unwrap(),
+                    dbg.node_edge_map[&curr][1].chars().last().unwrap(),
+                    k as usize - 1 + curr_ind,
+                ));
 
                 if bubble_ind >= dbg.bubble.len() {
                     break;
@@ -809,7 +821,10 @@ pub mod es4 {
         let mut col = 0;
         for i in 1..(m + 1) {
             for j in 1..(n + 1) {
-                let mut tmp = cmp::max(mm[i - 1][j] + (i as i32) * vw, mm[i][j - 1] + (j as i32) * hw);
+                let mut tmp = cmp::max(
+                    mm[i - 1][j] + (i as i32) * vw,
+                    mm[i][j - 1] + (j as i32) * hw,
+                );
                 tmp = cmp::max(tmp, 0);
                 if seq1.chars().nth(i - 1).unwrap() == seq2.chars().nth(j - 1).unwrap() {
                     mm[i][j] = cmp::max(tmp, mm[i - 1][j - 1] + dw);
@@ -821,11 +836,11 @@ pub mod es4 {
                     }
                 } else {
                     /*if b[i-1][j-1] == "d" || b[i][j-1] == "d" || b[i-1][j] == "d" {
-                    M[i][j] = 0;
-                }else{
-                    M[i][j] = cmp::max(tmp,0);
-                    //M[i][j] = tmp;
-                }*/
+                        M[i][j] = 0;
+                    }else{
+                        M[i][j] = cmp::max(tmp,0);
+                        //M[i][j] = tmp;
+                    }*/
                     mm[i][j] = tmp;
                 }
             }
@@ -872,12 +887,9 @@ pub mod es4 {
 
 #[cfg(test)]
 mod tests {
-    use crate::es1::{check_virus,
-                     check_virus2};
+    use crate::es1::{check_virus, check_virus2};
 
-    use crate::es2::{check_mutations,
-                     check_mutations2,
-                     check_mutations3};
+    use crate::es2::{check_mutations, check_mutations2, check_mutations3};
 
     use crate::es3::check_manhattan;
 
