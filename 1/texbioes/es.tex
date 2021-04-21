@@ -751,7 +751,9 @@ nodo \textit{sink}, privo di figli, e ogni volta che si incontra un nodo con due
 figli salvare la mutazione e proseguire su uno dei due cammini della
 \textbf{bubble}, indifferentemente. Si noti che se si incontra l'inizio di una
 \textbf{bubble} ma poi i suoi cammini si interrompono si può parlare di
-\textbf{tips}. Ogni avanzamento di nodo comporta 
+\textbf{tips} (anche se potenzialmente per le assunzioni fatte si ha un grafo
+sicuramente privo di cicli quindi il concetto di \textbf{tips} potrebbe dover
+essere pensato in modo più approfondito). Ogni avanzamento di nodo comporta 
 l'incremento di indice utile a salvare la posizione della mutazione.\\
 Si termina quando si arriva ad un nodo privo di figli.
 Qualora si abbia una mutazione nella prima base allora si avranno due
@@ -892,8 +894,8 @@ ovvero
 \texttt{toEndBubble(n)}. Tale metodo restituisce il nodo $n'$ di fine
 \textbf{bubble} (quello successivo con due archi entranti). Qualora
 \texttt{toEndBubble(n)} restituisca $null$ si ha che la \textbf{bubble} non
-viene chiusa prima della fine del grafo, avendo propriamente quindi un
-\textbf{tips).\\ 
+viene chiusa prima della fine del grafo, avendo qualcosa che potremmo definire
+un \textbf{tips).\\ 
 Il caso di prima base mutata rimane analogo alla versione precedente.\\
 Il salto alla fine della \textbf{bubble} comporta un comportamento pari a quello
 della prima versione dell'esercizio, comportando il medesimo aumento di indice
