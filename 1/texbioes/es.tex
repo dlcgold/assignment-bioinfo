@@ -749,7 +749,9 @@ essendo un nodo \textit{sink}. Basta quindi percorrere un cammino dal primo nodo
 (al più del caso con mismatch in prima base che verrà trattato dopo) fino ad un
 nodo \textit{sink}, privo di figli, e ogni volta che si incontra un nodo con due
 figli salvare la mutazione e proseguire su uno dei due cammini della
-\textbf{bubble}, indifferentemente. Ogni avanzamento di nodo comporta
+\textbf{bubble}, indifferentemente. Si noti che se si incontra l'inizio di una
+\textbf{bubble} ma poi i suoi cammini si interrompono si può parlare di
+\textbf{tips}. Ogni avanzamento di nodo comporta 
 l'incremento di indice utile a salvare la posizione della mutazione.\\
 Si termina quando si arriva ad un nodo privo di figli.
 Qualora si abbia una mutazione nella prima base allora si avranno due
@@ -890,8 +892,8 @@ ovvero
 \texttt{toEndBubble(n)}. Tale metodo restituisce il nodo $n'$ di fine
 \textbf{bubble} (quello successivo con due archi entranti). Qualora
 \texttt{toEndBubble(n)} restituisca $null$ si ha che la \textbf{bubble} non
-viene chiusa prima della fine del grafo (indicando che non si ha una mutazione
-nelle ultime 6 basi).\\
+viene chiusa prima della fine del grafo, avendo propriamente quindi un
+\textbf{tips).\\ 
 Il caso di prima base mutata rimane analogo alla versione precedente.\\
 Il salto alla fine della \textbf{bubble} comporta un comportamento pari a quello
 della prima versione dell'esercizio, comportando il medesimo aumento di indice
