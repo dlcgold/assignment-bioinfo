@@ -372,14 +372,12 @@ Si ha quindi il seguente pseudocodice.
     \EndWhile
     \State $cm \gets cm+1$
     \State $j \gets j+1$
-    \If {$seq1[i]==\,'a'$ \textbf{and} $cm \leq 5\cdot co$}
-    \State $check \gets \top$
-    \ElsIf {$seq1[i]==\,'t'$ \textbf{and} $cm \leq 10\cdot co$}
-    \State $check \gets \top$
+    \If {$seq1[i]==\,'a'$ \textbf{and} $\neg(cm \leq 5\cdot co)$}
+    \State \textbf{return} $\bot$
+    \ElsIf {$seq1[i]==\,'t'$ \textbf{and} $\neg(cm \leq 10\cdot co)$}
+    \State \textbf{return} $\bot$
     \ElsIf {($seq1[i]==\,'c'$ \textbf{or} $seq1[i]==\,'g'$) \textbf{and}
-    $cm \geq co$} 
-    \State $check \gets \top$
-    \Else
+    $\neg(cm \geq co)$} 
     \State \textbf{return} $\bot$
     \EndIf
     \State $co \gets 0$
@@ -389,11 +387,12 @@ Si ha quindi il seguente pseudocodice.
     \EndIf
     \EndIf
     \EndFor
-    \State \textbf{return} $check$
+    \State \textbf{return} $\top$
     \EndFunction
   \end{algorithmic}
   \caption{algoritmo di verifica dell'infezione, seconda versione}
 \end{algorithm}
+\newpage
 Nel dettaglio:
 \begin{itemize}
   \item alle righe 2-6 si verificano che le lunghezze delle due sequenze siano
@@ -412,16 +411,13 @@ Nel dettaglio:
   rispettivo contatore fino a che si hanno caratteri uguali
   \item alle righe 22-23 si aumenta il contatore della seconda stringa in quanto
   l'iterazione non conta il $j$-esimo carattere prima di un carattere diverso e
-  si aumenta l'indice di 1 in modo che punti al $j+1$-esimo carattere, quello
+  si aumenta l'indice di 1 in modo che punti al ($j+1$)-esimo carattere, quello
   diverso dal $j$-esimo 
   \item alle righe 24-32 vengono effettuati i controlli tramite i contatori
   secondo le specifiche date per le mutazioni, aggiornando la variabile
   booleana (operazione in se superflua ma comoda dal punto di vista della
   chiarezza dell'algoritmo). Se i controlli non sono superati si ritorna $\bot$,
-  interrompendo l'esecuzione. In termini di scrittura sarebbe bastato un solo
-  \textit{if} che controllasse che una delle tre condizioni non fosse rispettata
-  per ritornare $\bot$ ma in termini di comprensione del codice si è preferito
-  usare, per quanto inutile, la variabile d'appoggio $check$
+  interrompendo l'esecuzione
   \item alle righe 33-34 si azzerano i due contatori, in modo da poter iniziare
   un nuovo controllo con le nuove sequenze di caratteri
   \item alle righe 35-37 si verifica che, qualora l'indice che itera sulla prima
@@ -600,7 +596,7 @@ Passiamo ora allo pseudocodice principale.
     \State $seq2\gets lowercase(seq2)$
     \State $kmers1\gets getKmers(seq1,6)$
     \State $kmers2\gets getKmers(seq2,6)$
-    \If{$length(kmers1)\neq n-5$ \textbf{or} $length(kmers2)\neq n-5$}
+    \If{$length(kmers1)\neq n-5$ \textbf{or} $\length(kmers2)\neq n-5$}
     \State \textbf{return} $([\,\,\,],\bot)$
     \EndIf
     \If{$kmers1[0][0]\neq kmers2[0][0]$}
@@ -895,7 +891,7 @@ ovvero
 \textbf{bubble} (quello successivo con due archi entranti). Qualora
 \texttt{toEndBubble(n)} restituisca $null$ si ha che la \textbf{bubble} non
 viene chiusa prima della fine del grafo, avendo qualcosa che potremmo definire
-un \textbf{tips).\\ 
+un \textbf{tips}.\\ 
 Il caso di prima base mutata rimane analogo alla versione precedente.\\
 Il salto alla fine della \textbf{bubble} comporta un comportamento pari a quello
 della prima versione dell'esercizio, comportando il medesimo aumento di indice
@@ -949,7 +945,6 @@ nodo successivo e in tal caso si procede normalmente.
   \caption{Algoritmo basato su \textit{kmer}, \textit{grafo di De Bruijn} e
   \textit{bubble} per mutazioni} 
 \end{algorithm}
-
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.33]{img/mut2.pdf}
