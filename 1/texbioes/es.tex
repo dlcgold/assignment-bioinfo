@@ -98,12 +98,6 @@ L'algoritmo si divide in due parti:
   ottiene un vettore di sottostringhe di uguali caratteri
   \item confronto dei due vettori di sottostringhe
 \end{enumerate}
-%Assumendo in input le due stringhe $v$ e $w$, rispettivamente di lunghezza $n$ e
-%$m$
-%, si ha che la costruzione dei due vettori ha costo rispettivamente
-%$\mathcal{O}(n)$ e $\mathcal{O}(m)$ mentre
-%il confronto, possibile solo se i due vettori prodotti hanno lunghezza uguale
-%$l$, è in $\mathcal{O}(l)$. \\
 Si procede specificando che:
 \begin{itemize}
   \item $length(X)$ restituisce la lunghezza di $X$, che sia una stringa o un
@@ -111,8 +105,6 @@ Si procede specificando che:
   \item $push(X,Y)$ effettua l'operazione di \texttt{push} di $Y$ nel
   vettore/stringa $X$
   \item $string(Y)$ effettua il cast di $Y$ a \texttt{string}
-  \item $Y[i,e]$ specifica la sottostringa di $Y$ che va dall'indice $i$ incluso
-  all'indice $e$ incluso
   \item $lowercase(Y)$ porta $Y$ in \textit{lowercase}
 \end{itemize}
 Si ha quindi la prima parte dell'algoritmo, che effettua la divisione in
@@ -185,11 +177,12 @@ Prima di vedere il confronto si specifica che:
 Fatte queste assunzioni si può fare ancora un ultima osservazione prima di
 procedere con l'algoritmo. Qualora i due vettori prodotti dalla funzione
 \texttt{Splitter} fossero di lunghezza diversa allora l'algoritmo non potrà in
-nessun caso dire che ci sia stata un'''infezione'' in quanto si assume che non
-ci siano né \textit{gaps} né \textit{inserimenti}. In altri termini qualora i
-due vettori siano di diversa cardinalità sicuramente, con queste premesse, non è
-avvenuta alcuna infezione. Vediamo ora le altre casistiche. Si itera
-contemporaneamente sull'elemento i-esimo dei due vettori e:
+nessun caso dire che ci sia stata un'"infezione" in quanto si assume che non
+ci siano né \textit{delezioni} né \textit{inserzioni} di basi. In altri termini
+qualora i 
+due vettori siano di diversa cardinalità sicuramente non è
+avvenuta alcuna infezione, per come essa è stata definita. Vediamo ora le altre
+casistiche. Si itera contemporaneamente sull'elemento i-esimo dei due vettori e: 
 \begin{itemize}
   \item se i due elementi i-esimi presentano il primo carattere diverso allora,
   date le premesse, si specifica che non può essere avvenuta un'infezione
@@ -243,6 +236,7 @@ $seq1$:
   \end{algorithmic}
   \caption{algoritmo di verifica dell'infezione}
 \end{algorithm}
+\newpage
 Nel dettaglio:
 \begin{itemize}
   \item alle righe 2-4 si controlla che nessuna stringa sia $\varepsilon$. In
@@ -315,9 +309,9 @@ posizione 0, per comodità.\\
 Indico anche una versione intuitivamente più semplice. In questo caso si scorre
 la sequenze che si suppone essere 
 originale, tenendo conto dei caratteri uguali ripetuti. Appena si ha un cambio
-di carattere si verifica se nella sequenza che si vuole dimostrare essere una
-mutazione di quella originale si ha una corretta sequenza di caratteri secondo
-la specifica.\\
+di carattere si verifica se, nella sequenza che si vuole dimostrare essere una
+mutazione di quella originale, si ha una corretta sequenza di caratteri, secondo
+le specifiche.\\
 Si ha che:
 \begin{itemize}
   \item per comodità le sequenze sono riportate in lowercase e si assume che, in
@@ -325,10 +319,10 @@ Si ha che:
   \item \texttt{seq1} e \texttt{seq2} sono rispettivamente la sequenza originale
   al sequenza che si vuole dimostrare essere la mutazione
   \item \texttt{co} e \texttt{cm} sono le variabili che ogni volta
-  accumulano il conteggio dei caratteri uguali consecutivi rispettivamente sulla
-  sequenza originale e su quella che si suppone mutata
-  \item $i$ e $j$ sono rispettivamente gli indici per la prima e per la seconda
-  sequenza 
+  accumulano il conteggio dei caratteri uguali consecutivi, rispettivamente
+  sulla sequenza originale e su quella che si suppone mutata 
+  \item $i$ e $j$ sono, rispettivamente, gli indici per la prima e per la
+  seconda sequenza 
 \end{itemize}
 In poche parole si itera sulla sequenza originale, aggiornando di volta in volta
 il contatore relativo finché si ha lo stesso carattere. Nel momento in cui si ha
@@ -431,9 +425,10 @@ preprocessing vista nel primo algoritmo con la funzione
 lunghezze tiene conto di volta in volta dei caratteri uguali consecutivi,
 confrontando i contatori (motivo per cui anche gli esempi possono essere
 riadattati anche a questa seconda versione). Dal
-punto di vista computazionale, assumendo che la funzione \texttt{length} abbia
-costo lineare si ha in entrambi i casi un tempo quadratico nel caso peggiore,
-anche se si potrebbe fare uno studio più approfondito. 
+punto di vista computazionale non si segnalano particolari differenze. Entrambe
+le versioni, nel caso peggiore, iterano su entrambe le stringhe, anche se
+bisogna segnalare che il primo algoritmo deve iterare anche sul vettore dei
+``token''. 
 \chapter{Esercizio 2}
 \section{Versione 1}
 Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$
@@ -452,7 +447,7 @@ Si fanno le seguenti assunzioni:
   \item si assume che le sequenze siano tali per cui il loro \textit{kmer-set}
   coincida con il loro \textit{spettro} per $k=6$ (scelta approfondita dopo). In
   altri termini le sequenze 
-  sono tali per cui si hanno solo \textit{kmer} univoci
+  sono tali per cui si hanno solo \textit{kmer} di lunghezza 6 univoci
   \item si assume, per pura semplicità, di avere in input sequenze lunghe almeno
   quanto un singolo \textit{kmer}
 \end{itemize}
@@ -460,7 +455,7 @@ In base alle assunzioni precedenti si può anche assumere che, calcolati i due
 \textit{spettri}, che sono \textit{spettri senza ripetizioni}, relativi alle due
 sequenze, si abbia che essi siano di cardinalità uguale. Per verificare che il
 \textit{kmer-set} sia della stessa cardinalità dello spettro basta verificare
-che, assumendo $kmers$ il \textit{kmer-set} (calcolato per un certo $k$) di una
+che, chiamando $kmers$ il \textit{kmer-set} (calcolato per un certo $k$) di una
 certa sequenza $seq$, non valga: 
 \[length(kmers) \neq length(seq)-(k-1)\]
 Procediamo quindi descrivendo l'idea dietro l'algoritmo. L'idea principale è
@@ -511,8 +506,7 @@ si procede regolarmente con l'algoritmo.\\
 Per praticità l'algoritmo restituisce una tupla contenente:
 \begin{enumerate}
   \item il vettore delle mutazioni
-  \item un booleano che segnala se i vincoli del problema sono stati tutti
-  rispettati 
+  \item un booleano che segnala se ci sono stati problemi dovuti alle assunzioni 
 \end{enumerate}
 Quindi si hanno vari casi:
 \begin{itemize}
@@ -520,19 +514,21 @@ Quindi si hanno vari casi:
   presenta $\top$)
   \item un vettore di mutazioni nullo e in tal caso:
   \begin{itemize}
-    \item se il booleano è $\top$ significa che le due sequenze rispettano tutti
-    i vincoli ma non si hanno mutazioni
+    \item se il booleano è $\top$ significa che le due sequenze rispettano
+    i vincoli verificabili ma non si hanno mutazioni. In altri termini
+    $seq1=seq2$ 
     \item se il booleano è $\bot$ significa che qualche vincolo è stato
     infranto, ovvero stringhe di lunghezza diversa, stringhe nulle e stringhe
     che prevedono \textit{kmer} non univoci
   \end{itemize}
 \end{itemize}
 \textit{L'assunzione di avere distanza 5 tra ogni mutazione non viene verificata
-  e viene assunta come assioma}.\\
+  e viene assunta come assioma. L'algoritmo, per come costruito, ignorerebbe
+  mutazioni distanti meno di 5 basi}.\\
 Vediamo quindi prima lo pseudocodice e poi qualche esempio.\\
 Esplicitiamo prima la funzione \texttt{getKmers} che, data una sequenza $seq$ e
 un intero $k$, restituisce un vettore di stringhe, che per le assunzioni è sia
-il \textit{kmer-set} che lo \textit{spettro}, mantenendo l'ordine, quindi il
+il \textit{kmer-set} che lo \textit{spettro}, mantenendo l'ordine. Quindi il
 \textit{kmer} che nel vettore ha indice i è il \textit{kmer} che inizia
 all'indice $i$ della sequenza. Quest'ultimo ragionamento è possibile solo grazie
 alle assunzioni fatte: \textit{kmer} non univoci non permetterebbero questo. Con
@@ -540,12 +536,11 @@ $s[i,j]$ si intende la sottostringa di $s$ dall'indice $i$ all'indice $j$
 inclusi. Con $s[i,]$ si intende il suffisso di $s$ che inizia all'indice $i$.\\
 \textit{Si noti che la funzione \texttt{getKmers}, così esplicitata,
   consumerebbe la sequenza e quindi la si ``copia'' in una sequenza temporanea
-  $tmp$. Questo è
+  $tmp$, su cui poi effettua le operazioni. Questo è
   superfluo in termini di pseudocodice ma mi è sembrato giusto segnalare la
   cosa. Nel codice Rust il problema è risolto passando un \texttt{clone()} della
   sequenza. Si può pensare, volendo, ad un algoritmo che non consumi la stringa
-  e che non richieda una copia della stessa}.
-\newpage
+  e che non richieda una copia della stessa}.\\
 \noindent
 Passiamo quindi allo pseudocodice, in primis della funzione che calcola lo
 \textit{spettro}, che ricordiamo, per le assunzioni fatte, porterà ad uno
@@ -596,7 +591,7 @@ Passiamo ora allo pseudocodice principale.
     \State $seq2\gets lowercase(seq2)$
     \State $kmers1\gets getKmers(seq1,6)$
     \State $kmers2\gets getKmers(seq2,6)$
-    \If{$length(kmers1)\neq n-5$ \textbf{or} $\length(kmers2)\neq n-5$}
+    \If{$length(kmers1)\neq n-5$ \textbf{or} $length(kmers2)\neq n-5$}
     \State \textbf{return} $([\,\,\,],\bot)$
     \EndIf
     \If{$kmers1[0][0]\neq kmers2[0][0]$}
@@ -635,11 +630,8 @@ Nel dettaglio quindi:
   \item alle righe 11-12, per praticità, si riducono le due sequenze al
   lowercase
   \item alle righe 13-14 si calcolano i due \textit{spettri}, che, per il metodo
-  di calcolo presentano \textit{kmer} ordinati. SI usa $k=6$ come descritto
-  precedentemente 
-  rispetto alla sequenza di provenienza. In altri termini il primo \textit{kmer}
-  della prima sequenza è quello che inizia all'indice 0, il secondo all'indice 1
-  etc$\ldots$, permettendo così il confronto diretto tra i due \textit{spettri}
+  di calcolo presentano \textit{kmer} ordinati. Si usa $k=6$ come descritto
+  precedentemente
   \item alle righe 15-17 si verifica che effettivamente i due \textit{spettri}
   coincidano coi rispettivi \textit{kmer-set}, come spiegato precedentemente. In
   caso contrario si restituisce 
@@ -669,6 +661,7 @@ Nel dettaglio quindi:
 \end{itemize}
 Vediamo quindi qualche esempio.
 \begin{esempio}
+  \label{es:21}
   Siano date in input:
   \begin{itemize}
     \item atcttgcattaccgccccaatc
@@ -731,11 +724,11 @@ Vediamo quindi qualche esempio.
 \section{Versione 2}
 Per pura curiosità si può fare anche un piccolo ragionamento ulteriore. Con le
 assunzioni date si può costruire un \textbf{grafo di De Bruijn} delle due
-stringhe e vedere che non si hanno cicli, non essendoci \textit{kmer} non
-univoci all'interno di ciascuna stringa. Le mutazioni possono essere quindi
+stringhe e vedere che non si hanno cicli, non essendoci \textit{kmer} ripetuti
+all'interno di ciascuna stringa. Le mutazioni possono essere quindi 
 viste come le coppie di caratteri 
 che etichettano l'inizio di una \textbf{bubble} nel grafo, ovvero le etichette
-degli archi di un nodo che ha due archi uscenti, Vista l'essenza di
+degli archi di un nodo che ha due archi uscenti, Vista l'assenza di
 cicli, si ha che il primo \textit{kmer} calcolato per ciascuna delle due
 sequenze (potrebbero essere due diversi) è un nodo privo di archi entranti,
 essendo quindi un nodo \textit{source}, e
@@ -743,20 +736,20 @@ l'ultimo nodo calcolato per ciascuna delle due
 sequenze (potrebbero essere due diversi) è un nodo privo di archi uscenti,
 essendo un nodo \textit{sink}. Basta quindi percorrere un cammino dal primo nodo
 (al più del caso con mismatch in prima base che verrà trattato dopo) fino ad un
-nodo \textit{sink}, privo di figli, e ogni volta che si incontra un nodo con due
-figli salvare la mutazione e proseguire su uno dei due cammini della
-\textbf{bubble}, indifferentemente. Si noti che se si incontra l'inizio di una
-\textbf{bubble} ma poi i suoi cammini si interrompono si può parlare di
-\textbf{tips} (anche se potenzialmente per le assunzioni fatte si ha un grafo
-sicuramente privo di cicli quindi il concetto di \textbf{tips} potrebbe dover
-essere pensato in modo più approfondito). Ogni avanzamento di nodo comporta 
+nodo \textit{sink}, privo di figli, e, ogni volta che si incontra un nodo con due
+figli, salvare la mutazione e proseguire su uno dei due cammini della
+\textbf{bubble}, indifferentemente. Qualora il cammino scelto si interrompa
+sappiamo che, in modo parallelo, anche l'altro cammino si interromperebbe e
+quindi possiamo concludere la computazione. Ogni avanzamento di nodo comporta 
 l'incremento di indice utile a salvare la posizione della mutazione.\\
-Si termina quando si arriva ad un nodo privo di figli.
 Qualora si abbia una mutazione nella prima base allora si avranno due
-nodi privi di archi entranti che puntano però allo stesso nodo. Si procede
-quindi aggiungendo la prima base come mutazione e proseguendo con il
-ragionamento visto sopra a partire da questo nodo a cui puntano.\\
-I due grafi sono visualizzabili in figura \ref{fig:dbg}.\\
+nodi privi di archi entranti collegati a loro volta allo stesso nodo tramite i
+rispettivi archi uscenti. Si procede
+quindi aggiungendo la prima base delle etichette dei due nodi come mutazione,
+all'indice 0, e proseguendo con il
+ragionamento visto sopra a partire dal nodo a cui puntano.\\
+I due grafi, per le stesse sequenze usate nei due esempi della prima versione,
+sono visualizzabili in figura \ref{fig:dbg}.\\ 
 \begin{figure}
   \centering
   \includegraphics[scale = 0.38]{img/mut.pdf}
@@ -765,6 +758,8 @@ I due grafi sono visualizzabili in figura \ref{fig:dbg}.\\
     ``versione 1''}
   \label{fig:dbg}
 \end{figure}
+
+\noindent
 Facciamo le seguenti assunzioni, a livello di pseudocodice, per comodità:
 \begin{itemize}
   \item la funzione \texttt{createDBG(v, k)} prende in input un vettore $v$ di
@@ -777,7 +772,7 @@ Facciamo le seguenti assunzioni, a livello di pseudocodice, per comodità:
   restituisce un vettore contenente i puntatori ai nodi iniziali/sources, ovvero
   i nodi 
   senza archi entranti del \textit{grafo di De Bruijn}. Per le assunzioni fatte,
-  ho almeno un nodo iniziale e al più due
+  ho almeno un nodo iniziale e al più due nodi iniziali
   \item si supponga che ogni nodo sia rappresentato da un oggetto e che, dato un
   nodo $n$ si abbiano le seguenti funzioni:
   \begin{itemize}
@@ -791,9 +786,6 @@ Facciamo le seguenti assunzioni, a livello di pseudocodice, per comodità:
     successivi/figli di $n$
  \end{itemize}
 \end{itemize}
-Ovviamente avendo due sequenze in input che garantiscono le assunzioni iniziali
-quando si parla di vettori si parla sempre di vettori che possono essere o di
-lunghezza uno o due.
 \newpage
 Vediamo quindi uno pseudocodice possibile per trovare le mutazione usando il
 \textit{grafo di De Bruijn}. L'output è dello stesso formato del precedente
@@ -869,31 +861,45 @@ Nel dettaglio, tralasciando quanto uguale alla prima versione:
 \textit{Si noti che senza ulteriori assunzioni si perde esplicita referenza di
 quale base della mutazione appartiene alla sequenza di riferimento o a quella
 mutata, ma un controllo per capirlo è facilmente eseguibile usando l'indice
-della mutazione.}\\
-% aggiungere esempio
-\newpage
+della mutazione.}
+\begin{esempio}
+  Vediamo brevemente un esempio.\\
+  Siano date in input:
+  \begin{itemize}
+    \item atcttgcattaccgccccaatc
+    \item atcttacattaccgtcccaacc
+  \end{itemize}
+  Si costruisce quini il grafo a sinistra della figura \ref{fig:dbg}.\\
+  Si parte dal nodo ``atctt''. Si verifica che tale nodo ha due archi uscenti,
+  etichettati con ``g'' e ``a''. Si aggiunge quindi la mutazione (che avrà
+  indice 5 essendo $i=0$), si incrementa
+  l'indice e si prosegue su uno dei due cammini, spostandosi su ``tcttg''. Tale
+  nodo ha un solo arco uscente quindi ci si sposta in ``cttgc''. Si
+  continua in questa maniera fino a che non si arriva ad un nodo privo di archi
+  uscenti. 
+\end{esempio}
 \section{Versione 3}
 Potenzialmente, in fase di creazione del \textit{grafo di De Bruijn}, potremmo
 tenere traccia degli archi che ``saltano'' le \textit{bubble}, come in figura
 \ref{fig:dbg2}, per poter simulare qualcosa di analogo alla versione 1
-dell'algoritmo, evitando di visitare archi inutili, saltando direttamente
-dall'inizio di una \textbf{bubble}, dopo aver aggiunto la mutazione, alla sua
-fine, tramite una funzione adeguata. \\
-Ipotizziamo quindi che in fase di costruzione del \textit{grafo di De Bruijn}
-ogni qual volta si riconosca l'inizio di una \textbf{bubble} si provveda a
-creare, qualora la \textbf{bubble} si chiuda, a creare un arco, di tipologia
+dell'algoritmo, evitando di visitare nodi inutili. L'idea è quella di procedere
+saltando direttamente dall'inizio di una \textbf{bubble}, dopo aver aggiunto la
+mutazione, alla sua fine. \\
+Ipotizziamo quindi che, in fase di costruzione del \textit{grafo di De Bruijn},
+ogni qual volta si riconosca l'inizio di una \textbf{bubble}, si provveda a
+creare, qualora la \textbf{bubble} si chiuda, un arco, di tipologia
 diversa rispetto a quelli standard del grafo (anche solo banalmente indicandolo
 con 2 anziché 1 nell'ipotetica matrice di adiacenza), che punti alla fine della
-\textbf{bubble stessa}. Ipotizziamo quindi l'aggiunta un metodo, dato un
+\textbf{bubble} stessa. Ipotizziamo quindi l'aggiunta un metodo, dato un
 nodo $n$ inizio di una \textbf{bubble} (quindi con \texttt{outDegree(n)==2}),
-ovvero 
+che chiamiamo
 \texttt{toEndBubble(n)}. Tale metodo restituisce il nodo $n'$ di fine
-\textbf{bubble} (quello successivo con due archi entranti). Qualora
+\textbf{bubble} (il primo successivo con due archi entranti). Qualora
 \texttt{toEndBubble(n)} restituisca $null$ si ha che la \textbf{bubble} non
-viene chiusa prima della fine del grafo, avendo qualcosa che potremmo definire
-un \textbf{tips}.\\ 
+viene chiusa prima della fine del grafo, comportando che si è arrivati a fine
+computazione.\\  
 Il caso di prima base mutata rimane analogo alla versione precedente.\\
-Il salto alla fine della \textbf{bubble} comporta un comportamento pari a quello
+Il salto alla fine della \textbf{bubble} implica un comportamento pari a quello
 della prima versione dell'esercizio, comportando il medesimo aumento di indice
 per poter tener corretta traccia della posizione della mutazione.\\
 Possiamo quindi indicare il nuovo pseudocodice dove si vedrà che  la differenza
@@ -953,6 +959,30 @@ nodo successivo e in tal caso si procede normalmente.
     rispettivamente, ai due esempi della ``versione 1''}
   \label{fig:dbg2}
 \end{figure}
+\begin{esempio}
+  Vediamo brevemente un esempio.\\
+  Siano date le stringhe:
+  \begin{itemize}
+    \item tatcttgcattaccgccccaatc
+    \item gatcttacattaccgtcccaacc
+  \end{itemize}
+  che sono relative al grafo di destra nella figura \ref{fig:dbg2}.\\
+  Si segnala in primis la presenza dei due nodi iniziali ``tatct'' e ``gatct'' e
+  quindi si provvede all'aggiunta della mutazione, di indice 0, con ``t'' e
+  ``g''. Ci si sposta quindi al nodo ``atctt'', che presenta due archi
+  uscenti. Essendo l'indice a 1 si aggiunge la mutazione a indice $1+5=6$ tra
+  ``g'' e ``a''. Sfruttando ora il ``salto'' della \textbf{bubble} ci si sposta
+  al nodo ``catta''. Tale nodo presenta un solo arco uscente e quindi di
+  prosegue passando al nodo ``attac''. Si prosegue così fino ad arrivare ad un
+  nodo privo di archi uscenti, concludendo la computazione.
+\end{esempio}
+\noindent
+Le due versioni coi \textit{grafi di De Bruijn} sono state studiate per
+curiosità e per capire meglio la struttura, dal punto di vista didattico. Nel
+dettaglio, per questo problema, 
+date le assunzioni, il calcolo del grafo comporta un costo computazionale
+aggiuntivo che risulta essere però superfluo.
+
 \chapter{Esercizio 3}
 La \textbf{distanza di Hamming} tra due stringhe, che si assumono di uguale
 lunghezza, è 
@@ -962,7 +992,7 @@ una stringa all'altra.\\
 Ipotizzando di voler studiare la distanza di Hamming tra due sequenze tramite la
 griglia estesa si può ipotizzare di ragionare solo in termini di una delle due
 sequenze, ovvero considerare i pesi degli archi in ottica di una sola delle due
-sequenze, come in figura \ref{fig:pes3}. Si associano quindi i seguenti pesi:
+sequenze. Si associano quindi i seguenti pesi, come in figura \ref{fig:pes3}:
 \begin{itemize}
   \item $w(diagonale)=0$
   \item $w(verticale)=0$
@@ -993,26 +1023,28 @@ distanza di Hamming. Potenzialmente però tutti e soli i nodi $(i,i)$, con
 $i\in[1,n)$, oltre quindi al nodo sink, potrebbero essere i nodi di fine di
 potenziali cammini dal source per calcolare la distanza di Hamming tra le
 sottostringhe di lunghezza $i$ delle due stringhe in input.\\
-Prendendo, ad esempio, in input:
-\begin{itemize}
-  \item AAAGTTC
-  \item AAACTTT
-\end{itemize}
-Si ha un cammino minimo (non l'unico), assumendo costo degli archi in
-orizzontale pari a 1 e in verticale pari a 0, del tipo:
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 1]{img/es3.pdf}
-\end{figure}
-\noindent
-Dove in verde è segnato il cammino minimo scelto. Avendo solo due archi
-orizzontali, che ricordiamo avere peso 1 mentre gli altri hanno peso nullo,
-possiamo concludere che la distanza di Hamming tra le due stringhe è 
-pari a 2.\\
-Per il ragionamento fatto sopra, se mi fermassi in $(3,3)$, per $i=3$, avrei la
-distanza di Hamming tra AAA e AAA. Il cammino dal source a $(3,3)$ è formato da
-sole diagonali e quindi ha costo 0, che è appunto al distanza di Hamming tra le
-due sottostringhe.
+\begin{esempio}
+  Prendendo, ad esempio, in input:
+  \begin{itemize}
+    \item AAAGTTC
+    \item AAACTTT
+  \end{itemize}
+  Si ha un cammino minimo (non l'unico), assumendo costo degli archi in
+  orizzontale pari a 1 e in verticale pari a 0, del tipo:
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 1]{img/es3.pdf}
+  \end{figure}
+  \noindent
+  Dove in verde è segnato il cammino minimo scelto. Avendo solo due archi
+  orizzontali, che ricordiamo avere peso 1 mentre gli altri hanno peso nullo,
+  possiamo concludere che la distanza di Hamming tra le due stringhe è 
+  pari a 2.\\
+  Per il ragionamento fatto sopra, se mi fermassi in $(3,3)$, per $i=3$, avrei
+  la distanza di Hamming tra AAA e AAA. Il cammino dal source a $(3,3)$ è
+  formato da sole diagonali e quindi ha costo 0, che è appunto al distanza di
+  Hamming tra le due sottostringhe.
+\end{esempio}
 \chapter{Esercizio 4}
 Il problema della \textbf{longest common substring} si pone l'obiettivo di
 estrarre, a partire da due stringhe di lunghezza arbitraria, anche non uguale,
@@ -1067,33 +1099,37 @@ Per ricostruire la \textit{longest common substring} si parte dal nodo
 carattere corrispondente e si risale tutto il cammino diagonale, aggiungendo di
 volta in volta in testa il carattere letto. Ci si ferma quindi quando non si ha
 più un nodo il cui punteggio è stato ottenuto tramite un arco diagonale.
-
-Vediamo quindi un esempio pratico. Siano date:
-\begin{itemize}
-  \item AAACGCGCTTTTTCCCAT
-  \item AAAGGGGCGCGCTTTTTAAA
-\end{itemize}
-\newpage
-Si costruisce quindi la griglia e si identifica il cammino diagonale più lungo:
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.62]{img/es4.pdf}
-\end{figure}
-Ricostruendo si ha che tale cammino identifica un massimo pari a 10. Il
-sottocammino più pesante è quindi quello rappresentato in verde. Ipotizzando
-quindi di poter `risalire'' la dialogale si
-ricostruisce: 
-\begin{center}
-  CGCGCTTTTT
-\end{center}
-che è appunto la \textit{longest common substring} delle due sequenze in input.
+\begin{esempio}
+  Vediamo quindi un esempio pratico. Siano date:
+  \begin{itemize}
+    \item AAACGCGCTTTTTCCCAT
+    \item AAAGGGGCGCGCTTTTTAAA
+  \end{itemize}
+  \newpage
+  Si costruisce quindi la griglia e si identifica il cammino diagonale più
+  lungo: 
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.62]{img/es4.pdf}
+  \end{figure}
+  Ricostruendo si ha che tale cammino identifica un massimo pari a 10. Il
+  sottocammino più pesante è quindi quello rappresentato in verde. Ipotizzando
+  quindi di poter `risalire'' la dialogale si
+  ricostruisce: 
+  \begin{center}
+    CGCGCTTTTT
+  \end{center}
+  che è appunto la \textit{longest common substring} delle due sequenze in
+  input. 
+\end{esempio}
 \chapter{Link al codice}
 Durante lo svolgimento dell'assignment è stato elaborato anche il codice in
 \textit{Rust} per i vari esercizi, con i vari unit test correlati. In merito al
 codice relativo ai grafi di De Bruijn si specifica che alcuni metodi sono
 possibili solo grazie alle assunzioni fatte in merito all'esercizio 2.\\
 Il codice, insieme al \TeX\,  di questa relazione, è disponibile nella
-repository: \url{https://github.com/dlcgold/es_bio}.\\
+repository (a partire dalla data di scadenza dell'assignment):
+\url{https://github.com/dlcgold/es_bio}.\\ 
 \\
 Per eseguire i test:
 \begin{shaded}
