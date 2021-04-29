@@ -88,10 +88,8 @@
 \tableofcontents
 \chapter{Esercizio 1}
 \section{Versione 1}
-Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$ indicizzate a partire dalla
-posizione 0, per comodità. L'eventuale presenza di minuscole e maiuscole
-mischiate non si identifica come un problema e viene risolto portando tutto in
-minuscolo nell'algoritmo.\\
+Si assumano stringhe su $\Sigma=\{A,C,G,T\}$ indicizzate a partire dalla
+posizione 0, per comodità.\\
 L'algoritmo si divide in due parti:
 \begin{enumerate}
   \item divisione in ``token'' delle due stringhe. A partire da ogni stringa si
@@ -105,7 +103,6 @@ Si procede specificando che:
   \item $push(X,Y)$ effettua l'operazione di \texttt{push} di $Y$ nel
   vettore/stringa $X$
   \item $string(Y)$ effettua il cast di $Y$ a \texttt{string}
-  \item $lowercase(Y)$ porta $Y$ in \textit{lowercase}
 \end{itemize}
 Si ha quindi la prima parte dell'algoritmo, che effettua la divisione in
 ``token''.
@@ -113,9 +110,9 @@ Si ha quindi la prima parte dell'algoritmo, che effettua la divisione in
 \begin{esempio}
   Vediamo un esempio di input e output della funzione \texttt{Splitter}.
   \begin{itemize}
-    \item \textbf{input}: \textit{"aaataaaggggccccctttttttttttttttcc"}
-    \item \textbf{output}: \textit{["aaa", "t", "aaa", "gggg", "ccccc",
-      "ttttttttttttttt", "cc"]} 
+    \item \textbf{input}: \textit{"AAATAAAGGGGCCCCCTTTTTTTTTTTTTTTCC"}
+    \item \textbf{output}: \textit{["AAA", "T", "AAA", "GGGG", "CCCCC",\\
+      "TTTTTTTTTTTTTTT", "CC"]} 
   \end{itemize}
 \end{esempio}
 Si ha quindi lo pseudocodice:
@@ -191,15 +188,15 @@ casistiche. Si itera contemporaneamente sull'elemento i-esimo dei due vettori e:
   alla ``sequenza originale'' e $Y$ vettore relativo alla sequenze che si vuole
   dimostrare l'eventuale infezione):
   \begin{itemize}
-    \item se il primo carattere è ``a'' allora la lunghezza di $Y[i]$ deve
-    essere minore o uguale a 5 volte quella di $X[i]$, in quanto per ogni ``a''
-    in $X[i]$ posso avere al più 5 ``a'' in $Y[i]$
-    \item se il primo carattere è ``t'' allora la lunghezza di $Y[i]$ deve
-    essere minore o uguale a 10 volte quella di $X[i]$, in quanto per ogni ``t''
-    in $X[i]$ posso avere al più 10 ``t'' in $Y[i]$
-    \item se il primo carattere è ``c'' o ``g'' allora la lunghezza di $Y[i]$
-    deve essere maggiore o uguale di quella di $X[i]$, in quanto per ogni ``c''
-    o ``g'' in  in $X[i]$ posso avere un numero indefinito di ``c'' o ``g'' in
+    \item se il primo carattere è ``A'' allora la lunghezza di $Y[i]$ deve
+    essere minore o uguale a 5 volte quella di $X[i]$, in quanto per ogni ``A''
+    in $X[i]$ posso avere al più 5 ``A'' in $Y[i]$
+    \item se il primo carattere è ``T'' allora la lunghezza di $Y[i]$ deve
+    essere minore o uguale a 10 volte quella di $X[i]$, in quanto per ogni ``T''
+    in $X[i]$ posso avere al più 10 ``T'' in $Y[i]$
+    \item se il primo carattere è ``C'' o ``G'' allora la lunghezza di $Y[i]$
+    deve essere maggiore o uguale di quella di $X[i]$, in quanto per ogni ``C''
+    o ``G'' in  in $X[i]$ posso avere un numero indefinito di ``C'' o ``G'' in
     $Y[i]$ 
   \end{itemize}
 \end{itemize}
@@ -212,8 +209,8 @@ $seq1$:
     \If{$length(seq1) == 0$ \textbf{or} $length(seq2)==0$}
     \State \textbf{return} $\bot$
     \EndIf
-    \State $vecseq1\gets Splitter(lowercase(seq1))$
-    \State $vecseq2\gets Splitter(lowercase(seq2))$
+    \State $vecseq1\gets Splitter(seq1)$
+    \State $vecseq2\gets Splitter(seq2)$
     \State $check \gets \top$
     \If {$length(vecseq1)\neq length(vecseq2)$}
     \State \textbf{return} $\bot$
@@ -223,9 +220,9 @@ $seq1$:
     \If {$vseq1[i][0] \neq vseq2[i][0]$ \textbf{or} $\neg check$}
     \State \textbf{return} $\bot$
     \EndIf
-    \If {$vecseq1[i][0]==\,'a'$}
+    \If {$vecseq1[i][0]==\,'A'$}
     \State $check \gets (length(vecseq2[i]) \leq 5\cdot length(vecseq1[i]))$
-    \ElsIf {$vecseq1[i][0]==\,'t'$}
+    \ElsIf {$vecseq1[i][0]==\,'T'$}
     \State $check \gets (length(vecseq2[i]) \leq 10\cdot length(vecseq1[i]))$
     \Else
     \State $check \gets (length(vecseq2[i]) \geq length(vecseq1[i]))$
@@ -241,7 +238,7 @@ Nel dettaglio:
 \begin{itemize}
   \item alle righe 2-4 si controlla che nessuna stringa sia $\varepsilon$. In
   tal caso si ritorna $\bot$, come da assunzioni, concludendo l'iterazione
-  \item alle righe 5-7 si trasformano in lowercase le stringhe per comodità e si
+  \item alle righe 5-7 si producono i vettori di ``token'' si
   inizializza la variabile booleana che conterrà il risultato dell'algoritmo. Si
   noti che una volta diventata $\bot$ non potrebbe più tornare $\top$
   \item alle righe 8-10 si verifica che i due vettori di ``token'' siano lunghi
@@ -302,9 +299,8 @@ Nel dettaglio:
   In quanto i due secondi ``token'', {\color{green}T} e {\color{yellow}CC},
   corrispondono a caratteri diversi.
 \end{esempio}
-\newpage
 \section{Versione 2}
-Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$ indicizzate a partire dalla
+Si assumano stringhe su $\Sigma=\{A,C,G,T\}$ indicizzate a partire dalla
 posizione 0, per comodità.\\
 Indico anche una versione intuitivamente più semplice. In questo caso si scorre
 la sequenze che si suppone essere 
@@ -334,11 +330,12 @@ diverso da quello della prima si può restituire $\bot$. Controllando la
 seconda sequenza si aggiorna il rispettivo contatore e l'indice. Una volta che
 anche sulla seconda sequenza si ha un cambio di carattere o si è arrivati alla
 fine si confrontano i due contatori secondo le specifiche (ad esempio se nella
-stringa originale avevo due ``a'' consecutive ne posso avere al più 10 in quella
+stringa originale avevo due ``A'' consecutive ne posso avere al più 10 in quella
 che si vuole verificare essere la mutazione). Finito questo controllo si
 azzerano i contatori e si verifica che, qualora la sequenza originale sia stata
 visitata interamente, anche la seconda sia conclusa. In caso contrario si
-restituisce $\bot$.\\
+restituisce $\bot$.
+\newpage
 Si ha quindi il seguente pseudocodice.
 \begin{algorithm}[H]
   \small
@@ -349,8 +346,6 @@ Si ha quindi il seguente pseudocodice.
     \If{$m == 0$ \textbf{or} $n==0$}
     \State \textbf{return} $\bot$
     \EndIf
-    \State $seq1\gets lowercase(seq1)$
-    \State $seq2\gets lowercase(seq2)$
     \State $co \gets 0$
     \State $cm \gets 0$
     \State $j \gets 0$
@@ -366,11 +361,11 @@ Si ha quindi il seguente pseudocodice.
     \EndWhile
     \State $cm \gets cm+1$
     \State $j \gets j+1$
-    \If {$seq1[i]==\,'a'$ \textbf{and} $\neg(cm \leq 5\cdot co)$}
+    \If {$seq1[i]==\,'A'$ \textbf{and} $\neg(cm \leq 5\cdot co)$}
     \State \textbf{return} $\bot$
-    \ElsIf {$seq1[i]==\,'t'$ \textbf{and} $\neg(cm \leq 10\cdot co)$}
+    \ElsIf {$seq1[i]==\,'T'$ \textbf{and} $\neg(cm \leq 10\cdot co)$}
     \State \textbf{return} $\bot$
-    \ElsIf {($seq1[i]==\,'c'$ \textbf{or} $seq1[i]==\,'g'$) \textbf{and}
+    \ElsIf {($seq1[i]==\,'C'$ \textbf{or} $seq1[i]==\,'G'$) \textbf{and}
     $\neg(cm \geq co)$} 
     \State \textbf{return} $\bot$
     \EndIf
@@ -392,31 +387,31 @@ Nel dettaglio:
   \item alle righe 2-6 si verificano che le lunghezze delle due sequenze siano
   consistenti con le assunzioni del problema. Qualora anche solo una stringa sia
   $\varepsilon$ si ritorna $\bot$, terminando l'esecuzione
-  \item alle righe 7-11 si pongono le stringhe in lowercase e si inizializzano
-  le variabili come precedentemente specificato
-  \item alle righe 12-39 si parte iterando sulla prima stringa, aggiornando il
+  \item alle righe 7-9 si inizializzano contatori e indice come precedentemente
+  specificato 
+  \item alle righe 10-35 si itera sulla prima stringa, aggiornando il
   rispettivo contatore
-  \item alle righe 14-38 si eseguono le varie operazioni sse si
+  \item alle righe 12-34 si eseguono le varie operazioni sse si
   ha un cambio di carattere nella prima sequenza o se si è arrivati alla fine
   della stessa
-  \item alle righe 15-17, qualora si abbiano in confronto caratteri diversi per
+  \item alle righe 13-15, qualora si abbiano in confronto caratteri diversi per
   le due sequenze si ritorna $\bot$, interrompendo l'esecuzione
-  \item alle righe 18-21 si itera sulla seconda stringa, aggiornando il
+  \item alle righe 16-19 si itera sulla seconda stringa, aggiornando il
   rispettivo contatore fino a che si hanno caratteri uguali
-  \item alle righe 22-23 si aumenta il contatore della seconda stringa in quanto
+  \item alle righe 20-21 si aumenta il contatore della seconda stringa in quanto
   l'iterazione non conta il $j$-esimo carattere prima di un carattere diverso e
   si aumenta l'indice di 1 in modo che punti al ($j+1$)-esimo carattere, quello
   diverso dal $j$-esimo 
-  \item alle righe 24-32 vengono effettuati i controlli tramite i contatori
+  \item alle righe 22-28 vengono effettuati i controlli tramite i contatori
   secondo le specifiche date per le mutazioni, aggiornando la variabile
   booleana (operazione in se superflua ma comoda dal punto di vista della
   chiarezza dell'algoritmo). Se i controlli non sono superati si ritorna $\bot$,
   interrompendo l'esecuzione
-  \item alle righe 33-34 si azzerano i due contatori, in modo da poter iniziare
+  \item alle righe 29-30 si azzerano i due contatori, in modo da poter iniziare
   un nuovo controllo con le nuove sequenze di caratteri
-  \item alle righe 35-37 si verifica che, qualora l'indice che itera sulla prima
+  \item alle righe 31-33 si verifica che, qualora l'indice che itera sulla prima
   stringa sia arrivato a puntare alla fine della stessa, l'indice della seconda
-  deve fare lo stesso (ricordando che, a causa del $j\gets j+1$ in riga 23, la
+  deve fare lo stesso (ricordando che, a causa del $j\gets j+1$ in riga 21, la
   cosa è rappresentata da $j\neq n$ e non $j\neq n-1$)
 \end{itemize}
 Dal punto di vista pratico questo secondo algoritmo evita la fase di
@@ -427,14 +422,15 @@ confrontando i contatori (motivo per cui anche gli esempi possono essere
 riadattati anche a questa seconda versione). Dal
 punto di vista computazionale non si segnalano particolari differenze. Entrambe
 le versioni, nel caso peggiore, iterano su entrambe le stringhe, anche se
-bisogna segnalare che il primo algoritmo deve iterare anche sul vettore dei
-``token''. 
+bisogna segnalare che il primo algoritmo (che itera sulle due stringhe per
+creare i vettori di ``token'') deve iterare anche sul vettore dei ``token''. 
 \chapter{Esercizio 2}
 \section{Versione 1}
 Si assumano stringhe su $\Sigma=\{a,c,g,t,A,C,G,T\}$
 indicizzate a partire dalla posizione 0, per comodità. L'eventuale presenza di
 minuscole e maiuscole mischiate non si identifica come un problema e viene
-risolto portando tutto in minuscolo nell'algoritmo.\\
+risolto portando tutto in minuscolo nell'algoritmo, tramite un'apposita funzione
+\texttt{lowercase(X)}.\\
 Si fanno le seguenti assunzioni:
 \begin{itemize}
   \item si assume che le mutazione siano solo cambi di base, non avendo quindi
@@ -1006,12 +1002,14 @@ o, in modo speculare se si vuole ragionare sull'altra sequenza:
 \end{itemize}
 \begin{figure}
   \centering
-  \includegraphics[scale = 1.3]{img/es31.pdf}
+  \includegraphics[scale = 1.2]{img/es31.pdf}
   \caption{Rappresentazione grafica dei pesi degli archi.}
   \label{fig:pes3}
 \end{figure}
 Dove, in entrambi i casi, gli archi diagonali rappresentano un match mentre, a
-seconda, gli archi verticali o quelli orizzontali tengono conto dei mismatch.\\
+seconda, gli archi verticali o quelli orizzontali tengono conto dei mismatch
+(non entrambi per non contare doppiamente ogni mismatch nel momento in cui si
+studia il cammino sulla griglia).\\
 A questo punto si cerca il cammino di peso minimo che parte dal nodo
 \textit{source}, posto in alto a sinistra, e arriva al nodo \textit{sink}, posto
 in basso a destra. Essendo il nodo sink in posizione $(n,n)$, assumendo le due 
@@ -1033,7 +1031,7 @@ sottostringhe di lunghezza $i$ delle due stringhe in input.\\
   orizzontale pari a 1 e in verticale pari a 0, del tipo:
   \begin{figure}[H]
     \centering
-    \includegraphics[scale = 1]{img/es3.pdf}
+    \includegraphics[scale = 0.9]{img/es3.pdf}
   \end{figure}
   \noindent
   Dove in verde è segnato il cammino minimo scelto. Avendo solo due archi
@@ -1073,8 +1071,8 @@ Quando si ha un match quindi il nodo finale ha valore pari a uno più il valore
 del nodo sorgente dell'arco diagonale.\\
 Si ragiona quindi tenendo traccia del valore massimo raggiungo, tenendo traccia,
 per una maggior efficienza, anche delle coordinate. Una volta completata la
-griglia si avrà che il valore massimo corrisponde al nodo \textit{sink} del
-cammino composto dalla più lunga sequenza possibile di archi diagonali
+griglia si avrà che il nodo con valore massimo corrisponde al nodo \textit{sink}
+del cammino composto dalla più lunga sequenza possibile di archi diagonali
 consecutivi. Qualsiasi altra ``operazione'', con archi orizzontali o diagonali,
 comporta infatti una perdita di punteggio e ogni volta che un cammino diagonale
 termina viene azzerato il punteggio, tramite pesi negativi pesati sugli
@@ -1085,20 +1083,23 @@ altro non è che
 la lunghezza della \textit{longest common substring}. Sapendo che archi
 diagonali corrispondono a match tra le due sequenze si ottiene che tale cammino
 corrisponde alla \textit{longest common substring}. \\
-Volendo si può scegliere di salvare in un vettore i valori massimi qualora
-coincidano, per ottenere eventuali più \textit{longest common substring} qualora
-ce ne siano.\\
-In altri termini si cerca il sottocammino più pesante.\\
-ipotizzando di non ``azzerare'' ogni volta in caso di mismatch otterrei comunque
-una griglia dover il nodo massimo mi permetterebbe di risalire la diagonale
-ritrovando la \textit{longest common substring} ma tale nodo non potrebbe avere
-come valore la lunghezza della stessa, in quanto non ricomincerei il conto da 0
-ogni volta che creo un nuovo cammino fatto di diagonali.
+In altri termini si cerca il sottocammino più pesante, ovvero il cammino
+diagonale più lungo.\\
+Volendo si può scegliere di salvare in un vettore i nodi con i valori massimi
+qualora siano più di uno, per ottenere eventualmente tutte le \textit{longest
+  common substring} qualora ce ne siano.\\
+Ipotizzando di non ``azzerare'' ogni volta, in caso di mismatch, otterrei
+comunque una griglia dover il nodo massimo mi permetterebbe di risalire la
+diagonale ritrovando la \textit{longest common substring} ma tale nodo non
+potrebbe avere come valore la lunghezza della stessa, in quanto non ricomincerei
+il conto da 0 ogni volta che creo un nuovo cammino fatto di diagonali.\\
 Per ricostruire la \textit{longest common substring} si parte dal nodo
-\textit{sink}, come detto definito dal valore massimo calcolato. Si aggiunge il
-carattere corrispondente e si risale tutto il cammino diagonale, aggiungendo di
-volta in volta in testa il carattere letto. Ci si ferma quindi quando non si ha
-più un nodo il cui punteggio è stato ottenuto tramite un arco diagonale.
+\textit{sink}, come detto definito dal nodo con il valore massimo calcolato. Si
+inizializza quindi una stringa vuota. Si aggiunge il 
+carattere corrispondente alla stringa e si risale tutto il cammino diagonale,
+aggiungendo di volta in volta in testa il carattere letto. Ci si ferma quindi
+quando non si ha più un nodo il cui punteggio è stato ottenuto tramite un arco
+diagonale. 
 \begin{esempio}
   Vediamo quindi un esempio pratico. Siano date:
   \begin{itemize}

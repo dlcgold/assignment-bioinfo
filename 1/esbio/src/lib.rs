@@ -34,6 +34,8 @@ pub mod es1 {
     }
 
     /// Funzione per la versione 1 del controllo delle mutazioni, versione basata su token dell'esercizio 1.
+    ///
+    /// Si assume che le sequenze siano su alfabeto {a,c,g,t,A,C,G,T}
     /// # Examples
     /// ```
     /// let seq1 = "ATAGCTC";
@@ -93,6 +95,8 @@ pub mod es1 {
     }
 
     /// Funzione per la versione 2 del controllo delle mutazioni, versione basata su indici dell'esercizio 1.
+    ///
+    /// Si assume che le sequenze siano su alfabeto {a,c,g,t,A,C,G,T}
     /// # Examples
     /// ```
     /// let seq1 = "ATAGCTC";
@@ -113,7 +117,6 @@ pub mod es1 {
     pub fn check_virus2(s1: &str, s2: &str) -> bool {
         let seq1 = s1.to_lowercase();
         let seq2 = s2.to_lowercase();
-        //let mut check = true;
         if seq1.is_empty() || seq2.is_empty() {
             return false;
         }
@@ -626,7 +629,6 @@ pub mod es2 {
         }
 
         let dbg = Dbg::new(vec![seq1, seq2], k);
-        //println!("{:?}", dbg.bubble);
         let mut curr_ind: usize = 0;
         if dbg.nstart().len() == 2 {
             mutations.push(Mutation::new(
